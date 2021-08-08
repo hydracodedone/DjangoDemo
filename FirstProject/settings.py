@@ -1,3 +1,6 @@
+# encoding:UTF-8
+
+
 import os
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -15,6 +18,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
     'AppleApp',
 ]
 
@@ -81,3 +85,6 @@ USE_L10N = True
 USE_TZ = False
 
 STATIC_URL = '/static/'
+
+REST_FRAMEWORK = {
+}

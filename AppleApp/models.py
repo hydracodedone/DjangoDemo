@@ -1,16 +1,13 @@
 # encoding:UTF-8
 
 import datetime
-import uuid
 from datetime import datetime
 
 from django.contrib.auth.hashers import make_password
 from django.db import models
 from django.utils.timezone import utc
 
-
-def uuid_general():
-    return uuid.uuid1().hex
+from AppleApp.util.util import uuid_general
 
 
 def get_now_time():
