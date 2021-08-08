@@ -44,6 +44,7 @@ class LoginUser(CommonData):
     phone_number = models.CharField(null=False, max_length=15)
     login_name = models.CharField(null=False, max_length=20)
     login_password = models.CharField(null=False, max_length=200)
+    address = models.CharField(null=True, blank=True, max_length=100)
 
     def save(self, *args, **kwargs):
         self.login_password = make_password(self.login_password)
@@ -78,13 +79,32 @@ class Owner(CommonData):
         db_table = "Owner"
 
 
+class StoragePoolType(CommonData):
+    pool_type = models.CharField(null=False, unique=True, max_length=20)
+
+    def __str__(self):
+        return self.pool_type
+
+    class Meta:
+        db_table = "Storage_Pool_Type"
+
+
 class StoragePool(CommonData):
-    longtitude = models.FloatField(null=False)
-    latitude = models.FloatField(null=False)
-    name = models.CharField(null=False, blank=False, max_length=200)
+    pool_type = models.ForeignKey(StoragePoolType, on_delete=models.CASCADE)
+    longtitude = models.FloatField(null=True, blank=True)
+    latitude = models.FloatField(null=True, blank=True)
+    location = models.CharField(null=True, blank=True, max_length=200)
+    owner = models.ForeignKey(Owner, null=True, blank=True, on_delete=True)
+    phone_number = models.CharField(null=True, blank=True, max_length=11)
+    capacity = models.FloatField(null=True, blank=True)
+    is_internal_managed = models.BooleanField(null=False, default=True)
+
+    def __str__(self):
+        return "[{}]-[{}]".format(self.pool_type, self.owner)
 
     class Meta:
         db_table = "Storage_Pool"
+        unique_together = ["owner", "location"]
 
 
 class AppleType(CommonData):
@@ -138,6 +158,7 @@ class ApplePackingType(CommonData):
 
 
 class AppleInstance(CommonData):
+    batch_name = models.CharField(null=True, max_length=30)
     type = models.ForeignKey(AppleType, related_name="apple", on_delete=models.CASCADE)
     level = models.ForeignKey(AppleLevel, related_name="apple", on_delete=models.CASCADE)
     maturity = models.ForeignKey(AppleMaturity, related_name="apple", on_delete=models.CASCADE)
@@ -148,9 +169,10 @@ class AppleInstance(CommonData):
     storage = models.ManyToManyField(StoragePool, through='AppleInstanceThroughStorage')
 
     sum_remaining = models.FloatField(null=False)
-    price = models.FloatField(null=True)
+    price = models.FloatField(null=True, blank=True)
     product_time = models.DateField(null=False)
     is_available = models.BooleanField(null=False, default=True)
+    note = models.CharField(null=True, blank=True, max_length=300)
 
     def __str__(self):
         return "[{}]-[{}]-[{}]-[{}]-[{}]".format(
@@ -166,28 +188,35 @@ class AppleInstance(CommonData):
 
 
 class AppleInstanceThroughStorage(CommonData):
-    storage_name = models.ForeignKey(StoragePool, on_delete=models.CASCADE)
+    storage_pool = models.ForeignKey(StoragePool, on_delete=models.CASCADE)
     apple_instance = models.ForeignKey(AppleInstance, on_delete=models.CASCADE)
     remaining = models.FloatField(null=False)
     incoming_time = models.DateField()
+    note = models.CharField(null=True, blank=True, max_length=300)
 
     class Meta:
         db_table = "Apple_Instance_Through_Storage"
 
+    def __str__(self):
+        return "[{}]-[{}]".format(self.apple_instance.owner, self.remaining)
+
+
+class StoragePoolQuantityChangeLogType(CommonData):
+    change_type = models.CharField(null=False, unique=True, max_length=10)
+
+    def __str__(self):
+        return self.change_type
+
+    class Meta:
+        db_table = "Storage_Pool_Quantity_ChangeLog_Type"
+
 
 class StoragePoolQuantityChangeLog(CommonData):
-    instance = models.ForeignKey(AppleInstanceThroughStorage, on_delete=models.CASCADE)
+    record_type = models.ForeignKey(StoragePoolQuantityChangeLogType, on_delete=models.CASCADE)
+    storage = models.ForeignKey(AppleInstanceThroughStorage, on_delete=models.CASCADE)
     change_number = models.FloatField(null=False)
     remaining = models.FloatField(null=False)
+    note = models.CharField(null=True, blank=True, max_length=300)
 
     class Meta:
         db_table = "Storage_Pool_Quantity_ChangeLog"
-
-
-class AppleQuantityChangeLog(CommonData):
-    instance = models.ForeignKey(AppleInstance, on_delete=models.CASCADE)
-    change_number = models.FloatField(null=False)
-    remaining = models.FloatField(null=False)
-
-    class Meta:
-        db_table = "Apple_Quantity_ChangeLog"

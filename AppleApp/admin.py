@@ -6,7 +6,8 @@ from django.db.models import FloatField, Sum
 from django.utils.safestring import mark_safe
 
 from AppleApp.models import LoginUser, OwnerType, Owner, AppleType, AppleLevel, AppleMaturity, ApplePesticideResidue, \
-    ApplePackingType, AppleInstance
+    ApplePackingType, AppleInstance, StoragePoolType, StoragePool, AppleInstanceThroughStorage, \
+    StoragePoolQuantityChangeLogType, StoragePoolQuantityChangeLog
 
 
 class AdminAbstract(ModelAdmin):
@@ -14,9 +15,10 @@ class AdminAbstract(ModelAdmin):
     date_hierarchy = "create_time"
     empty_value_display = "-empty-"
     list_max_show_all = 100
-    preserve_filters = False
+    preserve_filters = True
     list_select_related = True
     show_full_result_count = False
+    actions_on_top = True
 
 
 @admin.register(LoginUser)
@@ -38,6 +40,10 @@ class AdminOwner(AdminAbstract):
     search_fields = ["user__uid", "user__name", "user__phone_number"]
     list_select_related = ["user"]
 
+    class AppleInstanceInlineModel(admin.TabularInline):
+        extra = 1
+        model = AppleInstance
+
     def get_apple_sum_remaining(self, obj):
         return obj.appleinstance_set.all().aggregate(
             Sum(
@@ -56,7 +62,7 @@ class AdminOwner(AdminAbstract):
 
     def record_button(self, obj):
         button = "<a class ='icon fa fa-detail' style='color: violet' " \
-                 "href='/admin/AppleApp/appleinstance/?q={}'>detail</a>".format(obj.user.uid)
+                 "href='/admin/AppleApp/appleinstance/?q={}'>detail</a>".format(obj.user.uid.hex)
 
         return mark_safe(button)
 
@@ -70,7 +76,9 @@ class AdminOwner(AdminAbstract):
 
     record_button.allow_tags = True
 
-    list_display = ["get_name", "get_apple_sum_remaining", "get_apple_avaliable_remaining", "record_button"]
+    list_display = ["get_name", "owner_type", "get_apple_sum_remaining", "get_apple_avaliable_remaining",
+                    "record_button"]
+    inlines = [AppleInstanceInlineModel]
 
 
 @admin.register(AppleType)
@@ -109,7 +117,7 @@ class AdminAppleInstance(AdminAbstract):
 
     def get_user_name(self, obj):
         button = "<a class ='icon fa fa-detail' style='color: violet' " \
-                 "href='/admin/AppleApp/owner/?q={}'>{}</a>".format(obj.owner.user.uid, obj.owner.user.name)
+                 "href='/admin/AppleApp/owner/?q={}'>{}</a>".format(obj.owner.user.uid.hex, obj.owner.user.name)
         return mark_safe(button)
 
     def get_available(self, obj):
@@ -126,11 +134,89 @@ class AdminAppleInstance(AdminAbstract):
     list_filter = ["type", "level", "maturity", "pesticide_residue", "packing_type", "owner__owner_type", "price",
                    "product_time", "is_available"]
 
-    owner_info = ["get_owner_type", "get_user_name", "get_user_phone"]
+    owner_info = ["get_owner_type", "get_user_phone", "get_user_name"]
 
-    raw_info = ["type", "level", "maturity", "pesticide_residue", "packing_type", "price", "sum_remaining",
-                "product_time", "get_available"]
+    raw_info = ["batch_name", "type", "level", "maturity", "pesticide_residue", "packing_type", "price",
+                "sum_remaining", "product_time", "get_available"]
 
     list_display = raw_info + owner_info
+    list_display_links = ["type"]
+    search_fields = ["owner__user__uid", "owner__user__name"]
 
-    search_fields = ["owner__uid", "owner__user__name"]
+    fieldsets = (
+        (
+            'instance_feature',
+            {
+                'fields':
+                    [
+                        "batch_name", "type", "level", "maturity", "pesticide_residue", "packing_type", "sum_remaining",
+                        "price", "product_time", "is_available"
+                    ]
+            }
+        ),
+        (
+            'owner',
+            {
+                'fields': ["owner"]
+            }
+        ),
+    )
+
+
+@admin.register(StoragePoolType)
+class AdminStoragePoolType(AdminAbstract):
+    pass
+
+
+@admin.register(StoragePool)
+class AdminStoragePool(AdminAbstract):
+    def get_owner_name(self, obj):
+        res = obj.owner
+        if res is None:
+            return "None"
+        else:
+            return res.user.name
+
+    get_owner_name.short_description = "pool_owner"
+    list_display = ["get_owner_name", "pool_type", "location", "phone_number", "capacity", "is_internal_managed"]
+    list_filter = ["pool_type", "is_internal_managed"]
+
+
+@admin.register(AppleInstanceThroughStorage)
+class AdminAppleInstanceThroughStorage(AdminAbstract):
+
+    def get_owner_name(self, obj):
+        res = obj.storage_pool.owner
+        if res is None:
+            return "None"
+        else:
+            return res.user.name
+
+    def get_pool_name(self, obj):
+        return obj.storage_pool.location
+
+    def get_pool_type(self, obj):
+        return obj.storage_pool.pool_type
+
+    def get_pool_manage_type(self, obj):
+        return obj.storage_pool.is_internal_managed
+
+    get_owner_name.short_description = "pool_owner"
+    get_pool_name.short_description = "pool_location"
+    get_pool_type.short_long_description = "pool_type"
+    get_pool_manage_type.short_description = "is_official_managed"
+    get_pool_manage_type.boolean = True
+    list_display = ["get_owner_name", "get_pool_type", "get_pool_name", "get_pool_manage_type", "remaining",
+                    "incoming_time"]
+    list_filter = ["storage_pool__pool_type", "storage_pool__is_internal_managed"]
+
+
+@admin.register(StoragePoolQuantityChangeLogType)
+class AdminStoragePoolQuantityChangeLogType(AdminAbstract):
+    pass
+
+
+@admin.register(StoragePoolQuantityChangeLog)
+class AdminStoragePoolQuantityChangeLog(AdminAbstract):
+    list_display = ["record_type", "change_number", "remaining", "note"]
+    list_filter = ["record_type", "remaining"]
