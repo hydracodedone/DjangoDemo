@@ -1,18 +1,83 @@
 # encoding:UTF-8
-
 from django.contrib.auth.hashers import make_password
 from django.db import models
+from django.db.models import QuerySet
 
-from AppleApp.abstract_model.Owner import OwnerObject
-from AppleApp.abstract_model.common import CommonAbstractModel, CommonObject
+from AppleApp.util.util import uuid_general
 
 
-class LoginUser(CommonAbstractModel, CommonObject):
+class CommonQuerySet(QuerySet):
+    def update(self, **kwargs):
+        return super().update(**kwargs)
+
+    def create(self, **kwargs):
+        return super().create(**kwargs)
+
+
+class CommonManager(models.Manager):
+
+    def get_queryset(self):
+        return CommonQuerySet(self.model, using=self._db)
+
+
+class CommonAbstractModel(models.Model):
+    uid = models.UUIDField(primary_key=True, auto_created=True, db_index=True, default=uuid_general)
+    create_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
+    update_time = models.DateTimeField(auto_now=True, verbose_name="最后一次更新时间")
+    delete_time = models.DateTimeField(null=True, blank=True, verbose_name="删除时间")
+    is_deleted = models.BooleanField(null=False, default=False, verbose_name="是否删除")
+    custom_objects = CommonManager()
+
+    class Meta:
+        abstract = True
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields()
+
+    def clean(self):
+        super().clean()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+
+class LoginUserQuerySet(QuerySet):
+    def update(self, **kwargs):
+        return super().update(**kwargs)
+
+    def create(self, **kwargs):
+        kwargs["login_password"] = make_password(kwargs["login_password"])
+        return super().create(**kwargs)
+
+
+class LoginUserManager(models.Manager):
+
+    def get_queryset(self):
+        return LoginUserQuerySet(self.model, using=self._db)
+
+
+class LoginUserAbstractModel(models.Model):
+    custom_objects = LoginUserManager()
+
+    class Meta:
+        abstract = True
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields()
+
+    def clean(self):
+        super().clean()
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
+
+
+class LoginUser(LoginUserAbstractModel):
     name = models.CharField(null=False, blank=False, max_length=10, db_index=True, verbose_name="姓名")
     phone_number = models.CharField(null=False, blank=False, max_length=15, unique=True, verbose_name="联系电话")
     login_name = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="登陆用户名")
     login_password = models.CharField(null=False, blank=False, max_length=200, verbose_name="密码")
-    address = models.CharField(null=True, blank=True, max_length=100, verbose_name="地址")
+    address = models.CharField(null=False, blank=False, max_length=100, verbose_name="地址")
     is_validate = models.BooleanField(null=False, blank=False, default=False, verbose_name="人工是否审核")
 
     def __str__(self):
@@ -20,11 +85,11 @@ class LoginUser(CommonAbstractModel, CommonObject):
 
     class Meta:
         db_table = "Login_User"
-        unique_together = ["is_deleted", "login_name"]
+        unique_together = ["login_name"]
         verbose_name_plural = "注册用户"
 
 
-class OwnerType(CommonAbstractModel, CommonObject):
+class OwnerType(CommonAbstractModel):
     owner_name = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="商家类型")
 
     def __str__(self):
@@ -34,12 +99,23 @@ class OwnerType(CommonAbstractModel, CommonObject):
         db_table = "Owner_Type"
         verbose_name_plural = "商家类型"
 
+
+class OwnerAbstractModel(CommonAbstractModel):
+    class Meta:
+        abstract = True
+
+    def clean_fields(self, exclude=None):
+        self.is_validate = False
+        super().clean_fields()
+
+    def clean(self):
+        super().clean()
+
     def save(self, *args, **kwargs):
-        self.login_password = make_password(self.login_password)
         super().save(*args, **kwargs)
 
 
-class Owner(CommonAbstractModel, OwnerObject):
+class Owner(OwnerAbstractModel):
     owner_type = models.ForeignKey(OwnerType, null=False, blank=False, on_delete=models.CASCADE, verbose_name="商家类型")
     user = models.OneToOneField(LoginUser, null=False, blank=False, on_delete=models.CASCADE, verbose_name="对应的注册用户")
 
@@ -50,19 +126,8 @@ class Owner(CommonAbstractModel, OwnerObject):
         db_table = "Owner"
         verbose_name_plural = "商家"
 
-    def clean_fields(self, exclude=None):
-        self.is_validate = False
-        super().clean_fields()
 
-    def clean(self):
-        super().clean()
-
-    def save(self, *args, **kwargs):
-        print("save")
-        super().save(*args, **kwargs)
-
-
-class StoragePoolType(CommonAbstractModel, CommonObject):
+class StoragePoolType(CommonAbstractModel):
     pool_type = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="仓库类型")
 
     def __str__(self):
@@ -73,7 +138,7 @@ class StoragePoolType(CommonAbstractModel, CommonObject):
         verbose_name_plural = "仓库类型"
 
 
-class StoragePool(CommonAbstractModel, CommonObject):
+class StoragePool(CommonAbstractModel):
     pool_type = models.ForeignKey(StoragePoolType, null=False, blank=False, on_delete=models.CASCADE,
                                   verbose_name="仓库类型")
     longtitude = models.FloatField(null=True, blank=True, verbose_name="经度")
@@ -94,7 +159,7 @@ class StoragePool(CommonAbstractModel, CommonObject):
         verbose_name_plural = "仓库"
 
 
-class AppleType(CommonAbstractModel, CommonObject):
+class AppleType(CommonAbstractModel):
     type_name = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="苹果种类")
 
     def __str__(self):
@@ -105,7 +170,7 @@ class AppleType(CommonAbstractModel, CommonObject):
         verbose_name_plural = "苹果种类"
 
 
-class AppleLevel(CommonAbstractModel, CommonObject):
+class AppleLevel(CommonAbstractModel):
     level_name = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="苹果等级")
 
     def __str__(self):
@@ -116,7 +181,7 @@ class AppleLevel(CommonAbstractModel, CommonObject):
         verbose_name_plural = "苹果等级"
 
 
-class AppleMaturity(CommonAbstractModel, CommonObject):
+class AppleMaturity(CommonAbstractModel):
     maturity_name = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="苹果成熟度")
 
     def __str__(self):
@@ -127,7 +192,7 @@ class AppleMaturity(CommonAbstractModel, CommonObject):
         verbose_name_plural = "苹果成熟度"
 
 
-class ApplePesticideResidue(CommonAbstractModel, CommonObject):
+class ApplePesticideResidue(CommonAbstractModel):
     pesticide_residue_name = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="农药残留量")
 
     def __str__(self):
@@ -138,7 +203,7 @@ class ApplePesticideResidue(CommonAbstractModel, CommonObject):
         verbose_name_plural = "苹果农药残留量"
 
 
-class ApplePackingType(CommonAbstractModel, CommonObject):
+class ApplePackingType(CommonAbstractModel):
     packing_type_name = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="包装方式")
 
     def __str__(self):
@@ -149,7 +214,7 @@ class ApplePackingType(CommonAbstractModel, CommonObject):
         verbose_name_plural = "苹果包装方式"
 
 
-class AppleInstance(CommonAbstractModel, CommonObject):
+class AppleInstance(CommonAbstractModel):
     batch_name = models.CharField(null=True, blank=True, max_length=30, verbose_name="苹果批次名称")
     type = models.ForeignKey(AppleType, related_name="apple", null=False, blank=False, on_delete=models.CASCADE,
                              verbose_name="苹果类型")
@@ -185,7 +250,7 @@ class AppleInstance(CommonAbstractModel, CommonObject):
         verbose_name_plural = "苹果批次信息"
 
 
-class AppleInstanceThroughStorage(CommonAbstractModel, CommonObject):
+class AppleInstanceThroughStorage(CommonAbstractModel):
     storage_pool = models.ForeignKey(StoragePool, null=False, blank=False, on_delete=models.CASCADE,
                                      verbose_name="苹果保存仓库")
     apple_instance = models.ForeignKey(AppleInstance, null=False, blank=False, on_delete=models.CASCADE,
@@ -204,7 +269,7 @@ class AppleInstanceThroughStorage(CommonAbstractModel, CommonObject):
         verbose_name_plural = "苹果库存信息"
 
 
-class StoragePoolQuantityChangeLogType(CommonAbstractModel, CommonObject):
+class StoragePoolQuantityChangeLogType(CommonAbstractModel):
     change_type = models.CharField(null=False, blank=False, unique=True, max_length=10, verbose_name="账目类型")
 
     def __str__(self):
@@ -215,7 +280,7 @@ class StoragePoolQuantityChangeLogType(CommonAbstractModel, CommonObject):
         verbose_name_plural = "账目类型"
 
 
-class StoragePoolQuantityChangeLog(CommonAbstractModel, CommonObject):
+class StoragePoolQuantityChangeLog(CommonAbstractModel):
     record_type = models.ForeignKey(StoragePoolQuantityChangeLogType, null=False, blank=False, on_delete=models.CASCADE,
                                     verbose_name="账目类型")
     storage = models.ForeignKey(AppleInstanceThroughStorage, null=False, blank=False, on_delete=models.CASCADE,

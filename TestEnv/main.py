@@ -1,4 +1,3 @@
-import json
 import os
 
 import django
@@ -7,9 +6,8 @@ if __name__ == '__main__':
     os.environ.setdefault("DJANGO_SETTINGS_MODULE", "FirstProject.settings")
     django.setup()
 
-    from AppleApp.models import AppleInstance
-    from AppleApp.serializers.readSerializer.apple import AppleInstanceReadSerializer
+    from AppleApp.models import *
 
-    obj = AppleInstance.objects.all()
-    s = AppleInstanceReadSerializer(obj, many=True)
-    print(json.dumps(s.data, ensure_ascii=False))
+    userObj = LoginUser.custom_objects.last()
+    ownerTypeObj = OwnerType.custom_objects.last()
+    Owner.custom_objects.create(user=userObj, owner_type=ownerTypeObj)
