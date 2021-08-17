@@ -3,30 +3,16 @@ from django.contrib.auth.hashers import make_password
 from django.db import models
 from django.db.models import QuerySet
 
+from AppleApp.modelManager.common_manager import CommonAbstractManager
 from AppleApp.util.util import uuid_general
 
 
-class CommonQuerySet(QuerySet):
-    def update(self, **kwargs):
-        return super().update(**kwargs)
-
-    def create(self, **kwargs):
-        return super().create(**kwargs)
-
-
-class CommonManager(models.Manager):
-
-    def get_queryset(self):
-        return CommonQuerySet(self.model, using=self._db)
-
-
-class CommonAbstractModel(models.Model):
+class CommonAbstractModel(models.Model, CommonAbstractManager):
     uid = models.UUIDField(primary_key=True, auto_created=True, db_index=True, default=uuid_general)
     create_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
     update_time = models.DateTimeField(auto_now=True, verbose_name="最后一次更新时间")
     delete_time = models.DateTimeField(null=True, blank=True, verbose_name="删除时间")
     is_deleted = models.BooleanField(null=False, default=False, verbose_name="是否删除")
-    custom_objects = CommonManager()
 
     class Meta:
         abstract = True
@@ -63,12 +49,15 @@ class LoginUserAbstractModel(CommonAbstractModel):
         abstract = True
 
     def clean_fields(self, exclude=None):
+        print("clean_fields")
         super().clean_fields()
 
     def clean(self):
+        print("clean")
         super().clean()
 
     def save(self, *args, **kwargs):
+        print("save")
         super().save(*args, **kwargs)
 
 

@@ -1,0 +1,6 @@
+PHONE_HAS_BEEN_REGISTERED = "该电话已被注册"
+PHONE_IS_ILLEGAL = "该电话不合法"
+NAME_IS_ILLEGAL = "该姓名不合法"
+LOGIN_NAME_HAS_BEEN_REGISTERED = "该登陆用户名已被注册"
+LOGIN_NAME_IS_ILLEGAL = "该登陆用户名不合法"
+PASSWORD_IS_ILLEGAL = "该登陆密码不合法"

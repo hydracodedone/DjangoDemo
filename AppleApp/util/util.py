@@ -5,6 +5,9 @@ from datetime import datetime
 from django.utils.timezone import utc
 from rest_framework.exceptions import ValidationError
 
+from AppleApp.Constant.validateConstant import PASSWORD_IS_ILLEGAL, PHONE_IS_ILLEGAL, NAME_IS_ILLEGAL
+from AppleApp.serializers.error import ErrorSerializer
+
 
 def uuid_general():
     return uuid.uuid4().hex
@@ -19,7 +22,7 @@ def name_validator(data):
     pattern = re.compile(mode)
     result = pattern.match(data)
     if result is None:
-        raise ValidationError("name is illegal")
+        raise ValidationError(NAME_IS_ILLEGAL)
     else:
         return data
 
@@ -29,8 +32,7 @@ def phone_number_validator(data):
     pattern = re.compile(mode)
     result = pattern.match(data)
     if result is None:
-        raise ValidationError("phone_number is illegal")
-
+        raise ValidationError(PHONE_IS_ILLEGAL)
 
 
 def login_username_validator(data):
@@ -44,10 +46,20 @@ def login_username_validator(data):
 
 
 def password_validator(data):
-    mode = r"^.*(?=.{6,})(?=.*\d)(?=.*[A-Z])(?=.*[a-z])(?=.*[!@#$%^&*? ]).*$"
+    mode = r"^(\w){6,20}$"
     pattern = re.compile(mode)
     result = pattern.match(data)
     if result is None:
-        raise ValidationError("password is illegal")
+        raise ValidationError(PASSWORD_IS_ILLEGAL)
     else:
         return data
+
+
+def get_final_response(err):
+    res = {"msg": "fail"}
+    res.update(
+        {
+            "err": err
+        }
+    )
+    return ErrorSerializer(instance=res).data

@@ -1,8 +1,11 @@
 from rest_framework.response import Response
+from rest_framework.status import HTTP_500_INTERNAL_SERVER_ERROR
 from rest_framework.views import APIView
 
+from AppleApp.modelAction.LoginUserActionSet import LoginModelAction
 from AppleApp.models import LoginUser
 from AppleApp.serializers.loginUser import LoginUserSerializer
+from AppleApp.util.util import get_final_response
 
 
 class LoginUserApi(APIView):
@@ -16,8 +19,11 @@ class LoginUserApi(APIView):
 
     @staticmethod
     def post(request):
-        data = request.POST
-        serializer = LoginUserSerializer(many=False,data=data)
-        if serializer.is_valid():
-            print(serializer.validated_data)
-        return Response("ok")
+        try:
+            data = request.POST
+            serializer = LoginUserSerializer(many=False, data=data)
+            if serializer.is_valid():
+                LoginModelAction.create_new_user(**serializer.validated_data)
+            return Response(serializer.errors)
+        except Exception as err:
+            return Response(get_final_response(err), status=HTTP_500_INTERNAL_SERVER_ERROR)

@@ -1,6 +1,7 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
+from AppleApp.Constant.validateConstant import PHONE_HAS_BEEN_REGISTERED, LOGIN_NAME_HAS_BEEN_REGISTERED
 from AppleApp.models import LoginUser
 from AppleApp.util.util import name_validator, phone_number_validator, login_username_validator, password_validator
 
@@ -27,7 +28,7 @@ class LoginUserSerializer(serializers.Serializer):
             phone_number_validator,
             UniqueValidator(
                 queryset=LoginUser.custom_objects.all(),
-                message="该电话已被注册")
+                message=PHONE_HAS_BEEN_REGISTERED)
         ])
     login_name = serializers.CharField(
         allow_null=False,
@@ -37,7 +38,7 @@ class LoginUserSerializer(serializers.Serializer):
             login_username_validator,
             UniqueValidator(
                 queryset=LoginUser.custom_objects.all(),
-                message="该登陆用户名已被注册")
+                message=LOGIN_NAME_HAS_BEEN_REGISTERED)
         ]
     )
     address = serializers.CharField(
