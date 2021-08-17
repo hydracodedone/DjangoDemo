@@ -5,7 +5,7 @@ from AppleApp.models import LoginUser
 from AppleApp.util.util import name_validator, phone_number_validator, login_username_validator, password_validator
 
 
-class   LoginUserSerializer(serializers.Serializer):
+class LoginUserSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         pass
 

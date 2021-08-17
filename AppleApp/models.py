@@ -56,7 +56,7 @@ class LoginUserManager(models.Manager):
         return LoginUserQuerySet(self.model, using=self._db)
 
 
-class LoginUserAbstractModel(models.Model):
+class LoginUserAbstractModel(CommonAbstractModel):
     custom_objects = LoginUserManager()
 
     class Meta:
