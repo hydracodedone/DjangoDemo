@@ -21,6 +21,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'AppleApp',
+
 ]
 
 MIDDLEWARE = [
@@ -86,8 +87,9 @@ USE_L10N = True
 USE_TZ = False
 
 STATIC_URL = '/static/'
-
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 REST_FRAMEWORK = {
+    "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema"
 }
 
 SIMPLEUI_HOME_INFO = False
