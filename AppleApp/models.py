@@ -3,11 +3,11 @@ from django.contrib.auth.hashers import make_password
 from django.db import models
 from django.db.models import QuerySet
 
-from AppleApp.modelManager.common_manager import CommonAbstractManager
+from AppleApp.modelManager.common_manager import CommonManager
 from AppleApp.util.util import uuid_general
 
 
-class CommonAbstractModel(models.Model, CommonAbstractManager):
+class CommonAbstractModel(models.Model):
     uid = models.UUIDField(primary_key=True, auto_created=True, db_index=True, default=uuid_general)
     create_time = models.DateTimeField(auto_now_add=True, verbose_name="创建时间")
     update_time = models.DateTimeField(auto_now=True, verbose_name="最后一次更新时间")
@@ -79,10 +79,11 @@ class LoginUser(LoginUserAbstractModel):
 
 
 class OwnerType(CommonAbstractModel):
-    owner_name = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="商家类型")
+    owner_type_name = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="商家类型")
+    custom_objects = CommonManager()
 
     def __str__(self):
-        return self.owner_name
+        return self.owner_type_name
 
     class Meta:
         db_table = "Owner_Type"
@@ -107,9 +108,10 @@ class OwnerAbstractModel(CommonAbstractModel):
 class Owner(OwnerAbstractModel):
     owner_type = models.ForeignKey(OwnerType, null=False, blank=False, on_delete=models.CASCADE, verbose_name="商家类型")
     user = models.OneToOneField(LoginUser, null=False, blank=False, on_delete=models.CASCADE, verbose_name="对应的注册用户")
+    custom_objects = CommonManager()
 
     def __str__(self):
-        return "商家类型:{},用户姓名:{}".format(self.owner_type.owner_name, self.user.name)
+        return "商家类型:{},用户姓名:{}".format(self.owner_type.owner_type_name, self.user.name)
 
     class Meta:
         db_table = "Owner"

@@ -110,7 +110,7 @@ class AdminApplePackingType(AdminAbstract):
 class AdminAppleInstance(AdminAbstract):
 
     def get_owner_type(self, obj):
-        return obj.owner.owner_type.owner_name
+        return obj.owner.owner_type.owner_type_name
 
     def get_user_phone(self, obj):
         return obj.owner.user.phone_number
@@ -190,22 +190,22 @@ class AdminStoragePoolType(AdminAbstract):
 
 @admin.register(StoragePool)
 class AdminStoragePool(AdminAbstract):
-    def get_owner_name(self, obj):
+    def get_owner_type_name(self, obj):
         res = obj.owner
         if res is None:
             return "None"
         else:
             return res.user.name
 
-    get_owner_name.short_description = "仓库法人"
-    list_display = ["get_owner_name", "pool_type", "location", "phone_number", "capacity", "is_internal_managed"]
+    get_owner_type_name.short_description = "仓库法人"
+    list_display = ["get_owner_type_name", "pool_type", "location", "phone_number", "capacity", "is_internal_managed"]
     list_filter = ["pool_type", "is_internal_managed"]
 
 
 @admin.register(AppleInstanceThroughStorage)
 class AdminAppleInstanceThroughStorage(AdminAbstract):
 
-    def get_owner_name(self, obj):
+    def get_owner_type_name(self, obj):
         res = obj.storage_pool.owner
         if res is None:
             return "None"
@@ -228,7 +228,7 @@ class AdminAppleInstanceThroughStorage(AdminAbstract):
         )
         return mark_safe(recode_info_button)
 
-    get_owner_name.short_description = "仓库所有者"
+    get_owner_type_name.short_description = "仓库所有者"
     get_pool_name.short_description = "仓库地址"
     get_pool_type.short_long_description = "仓库类型"
     get_pool_manage_type.short_description = "该仓库是否为内部维护类型"
@@ -236,7 +236,7 @@ class AdminAppleInstanceThroughStorage(AdminAbstract):
 
     get_pool_manage_type.boolean = True
     get_record_info.allow_tags = True
-    list_display = ["get_owner_name", "get_pool_type", "get_pool_name", "get_pool_manage_type", "remaining",
+    list_display = ["get_owner_type_name", "get_pool_type", "get_pool_name", "get_pool_manage_type", "remaining",
                     "incoming_time", "get_record_info"]
     list_filter = ["storage_pool__pool_type", "storage_pool__is_internal_managed"]
     search_fields = ["apple_instance__uid"]

@@ -16,5 +16,3 @@ class CommonManager(models.Manager):
         return CommonQuerySet(self.model, using=self._db)
 
 
-class CommonAbstractManager:
-    custom_objects = CommonManager()

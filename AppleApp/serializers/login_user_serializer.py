@@ -3,15 +3,16 @@ from rest_framework.validators import UniqueValidator
 
 from AppleApp.Constant.validateConstant import PHONE_HAS_BEEN_REGISTERED, LOGIN_NAME_HAS_BEEN_REGISTERED
 from AppleApp.models import LoginUser
+from AppleApp.serializers.onwer_type_serializer import OwnerTypeUidSeriazlier
 from AppleApp.util.util import name_validator, phone_number_validator, login_username_validator, password_validator
 
 
 class LoginUserSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
-        pass
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
     def create(self, validated_data):
-        pass
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
     name = serializers.CharField(
         allow_null=False,
@@ -54,3 +55,5 @@ class LoginUserSerializer(serializers.Serializer):
             password_validator,
         ]
     )
+
+    owner_type = OwnerTypeUidSeriazlier()
