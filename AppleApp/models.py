@@ -49,15 +49,12 @@ class LoginUserAbstractModel(CommonAbstractModel):
         abstract = True
 
     def clean_fields(self, exclude=None):
-        print("clean_fields")
         super().clean_fields()
 
     def clean(self):
-        print("clean")
         super().clean()
 
     def save(self, *args, **kwargs):
-        print("save")
         super().save(*args, **kwargs)
 
 
