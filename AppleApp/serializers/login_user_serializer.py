@@ -1,9 +1,9 @@
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
-from AppleApp.Constant.validateConstant import PHONE_HAS_BEEN_REGISTERED, LOGIN_NAME_HAS_BEEN_REGISTERED
 from AppleApp.models import LoginUser
 from AppleApp.serializers.onwer_type_serializer import OwnerTypeUidSeriazlier
+from AppleApp.util.constant.validate_error import LOGIN_NAME_HAS_BEEN_REGISTERED, PHONE_HAS_BEEN_REGISTERED
 from AppleApp.util.util import name_validator, phone_number_validator, login_username_validator, password_validator
 
 

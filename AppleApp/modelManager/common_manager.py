@@ -14,5 +14,3 @@ class CommonManager(models.Manager):
 
     def get_queryset(self):
         return CommonQuerySet(self.model, using=self._db)
-
-

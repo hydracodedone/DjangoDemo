@@ -1,8 +1,8 @@
 from rest_framework import serializers
 from rest_framework.exceptions import ValidationError
 
-from AppleApp.Constant.validateConstant import OwnerType_IS_ILLEGAL
 from AppleApp.modelAction.onwer_type_action_set import OwnerTypeModelAction
+from AppleApp.util.constant.validate_error import OwnerType_IS_ILLEGAL
 
 
 def uid_validator(uid_data):
