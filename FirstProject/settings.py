@@ -20,6 +20,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
+    "djorm_pool",
     "AppleApp",
 
 ]
@@ -94,3 +95,8 @@ REST_FRAMEWORK = {
 }
 
 SIMPLEUI_HOME_INFO = False
+DJORM_POOL_OPTIONS = {
+    "pool_size": 20,
+    "max_overflow": 0,
+    "recycle": 3600, # the default value
+}
