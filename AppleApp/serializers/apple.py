@@ -1,7 +1,6 @@
-from rest_framework import serializers
-
 from AppleApp.serializers.owner import OwnerInfoForeignKeyReadSerializer
 from AppleApp.serializers.storage import StorageInfoForeignKeyReadSerializer
+from rest_framework import serializers
 
 
 class AppleInstanceAppleInfoReadSerializer(serializers.Serializer):

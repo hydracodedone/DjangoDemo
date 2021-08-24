@@ -2,8 +2,8 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from rest_framework.exceptions import ValidationError as DRFValidationError
 
-from AppleApp.modelAction.onwer_type_action_set import OwnerTypeModelAction
-from AppleApp.modelAction.owner_action_set import OwnerModelAction
+from AppleApp.model_action.onwer_type_action_set import OwnerTypeModelAction
+from AppleApp.model_action.owner_action_set import OwnerModelAction
 from AppleApp.models import LoginUser
 
 

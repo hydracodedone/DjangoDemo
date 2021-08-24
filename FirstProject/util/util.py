@@ -6,7 +6,7 @@ from django.utils.timezone import utc
 from rest_framework.exceptions import ValidationError
 
 from AppleApp.serializers.error import ErrorSerializer
-from AppleApp.util.constant.validate_error import PHONE_IS_ILLEGAL, NAME_IS_ILLEGAL, PASSWORD_IS_ILLEGAL
+from FirstProject.util.constant.validate_error import NAME_IS_ILLEGAL, PASSWORD_IS_ILLEGAL
 
 
 def uuid_general():

@@ -1,10 +1,11 @@
 # encoding:UTF-8
+
 from django.contrib.auth.hashers import make_password
 from django.db import models
 from django.db.models import QuerySet
 
-from AppleApp.modelManager.common_manager import CommonManager
-from AppleApp.util.util import uuid_general
+from AppleApp.model_manager.common_manager import CommonManager
+from FirstProject.util.util import uuid_general
 
 
 class CommonAbstractModel(models.Model):

@@ -1,10 +1,10 @@
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from AppleApp.modelAction.login_user_action_set import LoginModelAction
+from AppleApp.model_action.login_user_action_set import LoginModelAction
 from AppleApp.serializers.login_user_serializer import LoginUserListlSerializer, \
     LoginUserCreateSerializer, LoginUserUpdateSerializer
-from AppleApp.util.pagination.custom_pagination import CustomPagination
+from FirstProject.util.pagination.custom_pagination import CustomPagination
 
 
 class LoginUserApi(APIView):

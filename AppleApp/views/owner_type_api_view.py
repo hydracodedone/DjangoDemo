@@ -1,8 +1,8 @@
 from rest_framework.views import APIView
 
-from AppleApp.modelAction.onwer_type_action_set import OwnerTypeModelAction
+from AppleApp.model_action.onwer_type_action_set import OwnerTypeModelAction
 from AppleApp.serializers.onwer_type_serializer import OwnerTypeSerializer
-from AppleApp.util.pagination.custom_pagination import CustomPagination
+from FirstProject.util.pagination.custom_pagination import CustomPagination
 
 
 class OwnerTypeApi(APIView):
