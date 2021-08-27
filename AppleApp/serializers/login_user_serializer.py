@@ -77,17 +77,6 @@ class LoginUserCreateSerializer(LoginUserOriginalSerializer):
     owner_type = OwnerTypeUidSeriazlier(required=True, allow_null=False)
 
 
-class LoginUserListlSerializer(LoginUserOriginalSerializer):
-    def update(self, instance, validated_data):
-        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
-
-    def create(self, validated_data):
-        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
-
-    owner_type = serializers.CharField(trim_whitespace=True, allow_null=False, allow_blank=False,
-                                       source="owner.owner_type.owner_type_name")
-
-
 class LoginUserUpdateSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")

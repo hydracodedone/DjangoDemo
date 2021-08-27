@@ -20,7 +20,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    "djorm_pool",
+    # "djorm_pool",
     "AppleApp",
 
 ]
@@ -57,8 +57,12 @@ WSGI_APPLICATION = "FirstProject.wsgi.application"
 
 DATABASES = {
     "default": {
-        "ENGINE": "django.db.backends.sqlite3",
-        "NAME": os.path.join(BASE_DIR, "db.sqlite3"),
+        "ENGINE": "django.db.backends.mysql",
+        "NAME": "demo",
+        "USER": "root",
+        "PASSWORD": "root",
+        "HOST": "127.0.0.1",
+        "PORT": "3306",
     }
 }
 
@@ -91,12 +95,12 @@ STATIC_URL = "/static/"
 DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
-    "EXCEPTION_HANDLER": "AppleApp.util.exception_handler.global_exception_handler.custom_exception_handler",
+    "EXCEPTION_HANDLER": "FirstProject.util.exception_handler.global_exception_handler.custom_exception_handler",
 }
 
 SIMPLEUI_HOME_INFO = False
 DJORM_POOL_OPTIONS = {
     "pool_size": 20,
     "max_overflow": 0,
-    "recycle": 3600, # the default value
+    "recycle": 3600
 }

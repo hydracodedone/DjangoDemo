@@ -5,7 +5,7 @@ from datetime import datetime
 from django.utils.timezone import utc
 from rest_framework.exceptions import ValidationError
 
-from AppleApp.serializers.error import ErrorSerializer
+from AppleApp.serializers.error_serializer import ErrorSerializer
 from FirstProject.util.constant.validate_error import NAME_IS_ILLEGAL, PASSWORD_IS_ILLEGAL
 
 

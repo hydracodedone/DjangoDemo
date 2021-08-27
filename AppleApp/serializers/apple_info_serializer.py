@@ -1,5 +1,3 @@
-from AppleApp.serializers.owner import OwnerInfoForeignKeyReadSerializer
-from AppleApp.serializers.storage import StorageInfoForeignKeyReadSerializer
 from rest_framework import serializers
 
 
@@ -22,14 +20,3 @@ class AppleInstanceAppleInfoReadSerializer(serializers.Serializer):
     def create(self, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
-
-class AppleInstanceReadSerializer(
-    AppleInstanceAppleInfoReadSerializer,
-    OwnerInfoForeignKeyReadSerializer,
-    StorageInfoForeignKeyReadSerializer
-):
-    def update(self, instance, validated_data):
-        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
-
-    def create(self, validated_data):
-        raise NotImplementedError("DO NOT NEED IMPLEMENTED")

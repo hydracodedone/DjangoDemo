@@ -151,6 +151,7 @@ class StoragePool(CommonAbstractModel):
 
 class AppleType(CommonAbstractModel):
     type_name = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="苹果种类")
+    custom_objects = CommonManager()
 
     def __str__(self):
         return self.type_name
@@ -162,6 +163,7 @@ class AppleType(CommonAbstractModel):
 
 class AppleLevel(CommonAbstractModel):
     level_name = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="苹果等级")
+    custom_objects = CommonManager()
 
     def __str__(self):
         return self.level_name
@@ -173,6 +175,7 @@ class AppleLevel(CommonAbstractModel):
 
 class AppleMaturity(CommonAbstractModel):
     maturity_name = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="苹果成熟度")
+    custom_objects = CommonManager()
 
     def __str__(self):
         return self.maturity_name
@@ -184,6 +187,7 @@ class AppleMaturity(CommonAbstractModel):
 
 class ApplePesticideResidue(CommonAbstractModel):
     pesticide_residue_name = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="农药残留量")
+    custom_objects = CommonManager()
 
     def __str__(self):
         return self.pesticide_residue_name
@@ -195,6 +199,7 @@ class ApplePesticideResidue(CommonAbstractModel):
 
 class ApplePackingType(CommonAbstractModel):
     packing_type_name = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="包装方式")
+    custom_objects = CommonManager()
 
     def __str__(self):
         return self.packing_type_name

@@ -26,10 +26,6 @@ class LoginModelAction(object):
                 })
 
     @staticmethod
-    def query_all_user_with_owner_info():
-        return LoginUser.custom_objects.select_related("owner").prefetch_related("owner__owner_type").all()
-
-    @staticmethod
     def update_user(**validate_data):
         uid = validate_data.pop("uid")
         user_obj = LoginUser.custom_objects.get(uid=uid)
