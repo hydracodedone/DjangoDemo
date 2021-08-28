@@ -118,6 +118,7 @@ class Owner(OwnerAbstractModel):
 
 class StoragePoolType(CommonAbstractModel):
     pool_type = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="仓库类型")
+    custom_objects = CommonManager()
 
     def __str__(self):
         return self.pool_type
@@ -139,6 +140,7 @@ class StoragePool(CommonAbstractModel):
     phone_number = models.CharField(null=False, blank=False, max_length=11, verbose_name="仓库联系电话")
     capacity = models.FloatField(null=True, blank=True, verbose_name="仓库总容量")
     is_internal_managed = models.BooleanField(null=False, blank=False, default=True, verbose_name="是否为内部维护信息")
+    custom_objects = CommonManager()
 
     def __str__(self):
         return "仓库类型:{},仓库法人姓名:{}".format(self.pool_type, self.owner_name)

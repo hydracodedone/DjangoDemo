@@ -10,7 +10,6 @@ class AdministrativeDivisionAPIView(APIView):
     @staticmethod
     def get(request):
         data = AdminstrativeDivisionAction.query_all_administrative_data()
-        print(dir(data[0]))
         serializer = AdministrativeDivisionSerializer(many=True)
         serializer.instance = data
         return Response(serializer.data)
