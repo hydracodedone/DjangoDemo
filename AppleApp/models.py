@@ -288,3 +288,15 @@ class StoragePoolQuantityChangeLog(CommonAbstractModel):
     class Meta:
         db_table = "Storage_Pool_Quantity_ChangeLog"
         verbose_name_plural = "账目流水"
+
+
+class AdministrativeDivision(CommonAbstractModel):
+    administrator_name = models.CharField(max_length=10, null=False, unique=True)
+    administrator_code = models.CharField(max_length=15, null=True)
+    superial_administrator = models.ForeignKey(null=True, to="self", on_delete=models.CASCADE)
+    is_province = models.BooleanField(null=False, default=False)
+    is_city = models.BooleanField(null=False, default=False)
+    is_county = models.BooleanField(null=False, default=False)
+    is_country = models.BooleanField(null=False, default=False)
+    is_village = models.BooleanField(null=False, default=False)
+    custom_objects = CommonManager()
