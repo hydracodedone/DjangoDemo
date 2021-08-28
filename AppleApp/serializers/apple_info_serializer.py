@@ -19,4 +19,3 @@ class AppleInstanceAppleInfoReadSerializer(serializers.Serializer):
 
     def create(self, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
-

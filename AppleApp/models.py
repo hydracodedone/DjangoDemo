@@ -300,3 +300,10 @@ class AdministrativeDivision(CommonAbstractModel):
     is_country = models.BooleanField(null=False, default=False)
     is_village = models.BooleanField(null=False, default=False)
     custom_objects = CommonManager()
+
+    def __str__(self):
+        return self.administrator_name
+
+    class Meta:
+        db_table = "Administrative_Division"
+        verbose_name_plural = "行政区域"

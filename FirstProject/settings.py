@@ -20,7 +20,7 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "rest_framework",
-    # "djorm_pool",
+    "djorm_pool",
     "AppleApp",
 
 ]
@@ -104,3 +104,4 @@ DJORM_POOL_OPTIONS = {
     "max_overflow": 0,
     "recycle": 3600
 }
+DJORM_POOL_PESSIMISTIC = True

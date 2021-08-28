@@ -3,7 +3,7 @@ from AppleApp.models import AdministrativeDivision
 
 class AdminstrativeDivisionAction(object):
     @staticmethod
-    def create_single_layar_data(name, code, administrator_type, superial_instance=None, ):
+    def __create_single_layar_data(name, code, administrator_type, superial_instance=None):
         instance = AdministrativeDivision.custom_objects.create(
             administrator_name=name,
             administrator_code=code,
@@ -22,12 +22,12 @@ class AdminstrativeDivisionAction(object):
         instance.save()
         return instance
 
-    def insert_data(self, dict_data: dict, administrator_type, superial_instance=None):
+    def __insert_data(self, dict_data: dict, administrator_type, superial_instance=None):
         for key, value in dict_data.items():
             name = key
             code = value.get("code")
             inferior = value.get("data")
-            superial_instance = self.create_single_layar_data(
+            superial_instance_temp = self.__create_single_layar_data(
                 name=name,
                 code=code,
                 administrator_type=administrator_type,
@@ -35,4 +35,9 @@ class AdminstrativeDivisionAction(object):
             )
             if inferior:
                 administrator_type += 1
-                self.insert_data(inferior, administrator_type, superial_instance)
+                self.__insert_data(inferior, administrator_type, superial_instance_temp)
+
+    @staticmethod
+    def query_all_administrative_data():
+        return AdministrativeDivision.custom_objects.prefetch_related("superial_administrator").filter(
+            is_province=True).all()
