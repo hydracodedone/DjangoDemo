@@ -21,5 +21,4 @@ urlpatterns = [
     path("storage_pool_type/", StoragePoolTypeAPIView.as_view()),
     path("administrative_division/", AdministrativeDivisionAPIView.as_view()),
     path("apple_feature/", AppleFeatureApi.as_view()),
-    path("administrative_division/", AdministrativeDivisionAPIView.as_view()),
 ]
