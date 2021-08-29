@@ -13,7 +13,6 @@ class OwnerModelAction(object):
         try:
             owner_instance.full_clean()
         except ValidationError as err:
-            print(err)
             raise DRFValidationError(err.message_dict)
         else:
             owner_instance.save()

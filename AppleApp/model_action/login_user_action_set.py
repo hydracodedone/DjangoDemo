@@ -38,7 +38,7 @@ class LoginModelAction(object):
     @staticmethod
     def update_user(**validate_data):
         uid = validate_data.pop("uid")
-        user_instance = LoginUser.custom_objects.get(uid=uid)
+        user_instance = LoginUser.custom_objects.filter(uid=uid).first()
         user_instance.__dict__.update(**validate_data)
         user_instance.__dict__.update({"is_validate": False})
         try:
@@ -47,3 +47,10 @@ class LoginModelAction(object):
             raise DRFValidationError(err.message_dict)
         else:
             user_instance.save()
+
+    @staticmethod
+    def query_user_by_uid(uid):
+        if LoginUser.custom_objects.filter(uid=uid).first():
+            return True
+        else:
+            return False

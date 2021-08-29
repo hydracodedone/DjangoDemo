@@ -3,7 +3,7 @@ from rest_framework.views import APIView
 
 from AppleApp.model_action.login_user_action_set import LoginModelAction
 from AppleApp.serializers.login_user_serializer import LoginUserCreateSerializer, LoginUserUpdateSerializer
-from FirstProject.util.constant.stand_response import STAND_RESPONSE
+from FirstProject.util.customized_response.global_response import ResponseFomatter
 
 
 class LoginUserApi(APIView):
@@ -14,8 +14,10 @@ class LoginUserApi(APIView):
         if serializer.is_valid():
             LoginModelAction.create_new_user(**serializer.validated_data)
         else:
-            return Response(serializer.errors)
-        return Response(STAND_RESPONSE)
+            response_data = ResponseFomatter.get_validated_error(serializer.errors)
+            return Response(response_data)
+        response_data = ResponseFomatter.get_normal_response(serializer.data)
+        return Response(response_data)
 
     @staticmethod
     def put(request):
@@ -24,5 +26,7 @@ class LoginUserApi(APIView):
         if serializer.is_valid():
             LoginModelAction.update_user(**serializer.validated_data)
         else:
-            return Response(serializer.errors)
-        return Response(STAND_RESPONSE)
+            response_data = ResponseFomatter.get_validated_error(serializer.errors)
+            return Response(response_data)
+        response_data = ResponseFomatter.get_normal_response(serializer.data)
+        return Response(response_data)

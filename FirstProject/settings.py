@@ -148,7 +148,7 @@ LOGGING = {
     },
     'loggers': {
         '': {
-            'handlers': ['default', 'console', 'error'],
+            'handlers': ['console', 'error'],
             'level': 'DEBUG',
             'propagate': True
         },

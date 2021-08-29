@@ -1,10 +1,13 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueValidator
 
+from AppleApp.model_action.login_user_action_set import LoginModelAction
 from AppleApp.models import LoginUser
 from AppleApp.serializers.onwer_type_serializer import OwnerTypeUidSeriazlier
 from FirstProject.util.constant.validate_error import PHONE_HAS_BEEN_REGISTERED, LOGIN_NAME_HAS_BEEN_REGISTERED
-from FirstProject.util.util import login_username_validator, name_validator, phone_number_validator, password_validator
+from FirstProject.util.validate_function.validate_function import name_validator, phone_number_validator, \
+    login_username_validator, password_validator
 
 
 class LoginUserOriginalSerializer(serializers.Serializer):
@@ -104,7 +107,7 @@ class LoginUserUpdateSerializer(serializers.Serializer):
         validators=[
             phone_number_validator,
             UniqueValidator(
-                queryset=LoginUser.custom_objects.all(),
+                queryset=LoginUser.custom_objects.all().only("phone_number"),
                 message=PHONE_HAS_BEEN_REGISTERED)
         ])
     login_name = serializers.CharField(
@@ -134,3 +137,8 @@ class LoginUserUpdateSerializer(serializers.Serializer):
             password_validator,
         ]
     )
+
+    @staticmethod
+    def validate_uid(uid):
+        if not LoginModelAction.query_user_by_uid(uid):
+            raise ValidationError("uid dose not match any user")

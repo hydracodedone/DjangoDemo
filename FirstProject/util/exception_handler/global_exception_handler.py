@@ -1,11 +1,11 @@
 import traceback
 
+from FirstProject.util.normal_response.global_response import ResponseFomatter
 from rest_framework.response import Response
 from rest_framework.status import HTTP_500_INTERNAL_SERVER_ERROR
 from rest_framework.views import exception_handler
 
 from FirstProject.util.logging.golobal_logging import MyAbstractLogger
-from FirstProject.util.util import get_final_response
 
 LOGGER = MyAbstractLogger(__name__).logger
 
@@ -21,5 +21,5 @@ def custom_exception_handler(exc, context):
             )
         )
         LOGGER.error(traceback.format_exc())
-        return Response(get_final_response(exc), status=HTTP_500_INTERNAL_SERVER_ERROR)
+        return Response(ResponseFomatter.get_unknown_error(exc.__str__()), status=HTTP_500_INTERNAL_SERVER_ERROR)
     return response

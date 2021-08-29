@@ -5,8 +5,7 @@ from datetime import datetime
 from django.utils.timezone import utc
 from rest_framework.exceptions import ValidationError
 
-from AppleApp.serializers.error_serializer import ErrorSerializer
-from FirstProject.util.constant.validate_error import NAME_IS_ILLEGAL, PASSWORD_IS_ILLEGAL
+from FirstProject.util.constant.validate_error import NAME_IS_ILLEGAL, PASSWORD_IS_ILLEGAL, PHONE_IS_ILLEGAL
 
 
 def uuid_general():
@@ -53,13 +52,3 @@ def password_validator(data):
         raise ValidationError(PASSWORD_IS_ILLEGAL)
     else:
         return data
-
-
-def get_final_response(err):
-    res = {"msg": "fail"}
-    res.update(
-        {
-            "err": err
-        }
-    )
-    return ErrorSerializer(instance=res).data

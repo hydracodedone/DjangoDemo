@@ -5,7 +5,7 @@ from django.db import models
 from django.db.models import QuerySet
 
 from AppleApp.model_manager.common_manager import CommonManager
-from FirstProject.util.util import uuid_general
+from FirstProject.util.validate_function.validate_function import uuid_general
 
 
 class CommonAbstractModel(models.Model):
