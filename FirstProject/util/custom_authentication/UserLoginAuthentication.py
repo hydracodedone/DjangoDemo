@@ -77,7 +77,7 @@ class UserLoginJWTAuthentication(object):
         options = {
             'verify_exp': api_settings.JWT_VERIFY_EXPIRATION,
         }
-        unverified_payload = jwt.decode(token, None, False)
+        unverified_payload = jwt.decode(token, "", False, api_settings.JWT_ALGORITHM)
         secret_key = cls.jwt_get_secret_key(unverified_payload)
         return jwt.decode(
             token,

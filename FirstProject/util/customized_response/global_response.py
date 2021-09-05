@@ -3,7 +3,7 @@ class ResponseFomatter(object):
     @staticmethod
     def get_normal_response(data):
         return {
-            "msg": "query success",
+            "msg": "handle success",
             "err": "",
             "data": data
         }

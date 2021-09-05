@@ -161,7 +161,6 @@ site-packages/rest_framework_jwt/settings.py DEFAULTS
 
 JWT_AUTH = {
     'JWT_EXPIRATION_DELTA': datetime.timedelta(minutes=30),
-    'JWT_AUTH_HEADER_PREFIX': 'JWT',
     'AUTH_USER_UID': "uid",
     'AUTH_USER_MODEL': "AppleApp.LoginUser",
     'JWT_ALLOW_REFRESH': True,
