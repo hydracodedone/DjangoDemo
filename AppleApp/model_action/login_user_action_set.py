@@ -1,12 +1,12 @@
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from rest_framework.exceptions import ValidationError as DRFValidationError
 
 from AppleApp.model_action.owner_action_set import OwnerModelAction
 from AppleApp.model_action.storage_pool_action_set import StoragePoolModelAction
 from AppleApp.model_action.storge_type_action_set import StorageTypeModelAction
 from AppleApp.models import LoginUser
 from FirstProject.util.constant.model_action_error import LOGIN_FAIL
+from FirstProject.util.customized_exception.global_exception import DataInvalidationException
 
 
 class LoginModelAction(object):
@@ -17,7 +17,7 @@ class LoginModelAction(object):
         try:
             user_instance.full_clean()
         except ValidationError as err:
-            raise DRFValidationError(err.message_dict)
+            raise DataInvalidationException(err.message_dict)
         else:
             with transaction.atomic():
                 user_instance.save()
@@ -45,7 +45,7 @@ class LoginModelAction(object):
         try:
             user_instance.full_clean()
         except ValidationError as err:
-            raise DRFValidationError(err.message_dict)
+            raise DataInvalidationException(err.message_dict)
         else:
             user_instance.save()
 
@@ -65,9 +65,8 @@ class LoginModelAction(object):
             login_password=login_password
         ).only("uid", "login_name").first()
         if not user_instance:
-            # todo
-            raise DRFValidationError(
-                {"name_or_password": LOGIN_FAIL}
+            raise DataInvalidationException(
+                {"invalid input": LOGIN_FAIL}
             )
         else:
             return user_instance
