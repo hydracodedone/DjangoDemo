@@ -134,8 +134,7 @@ class StoragePool(CommonAbstractModel):
     longtitude = models.FloatField(null=True, blank=True, verbose_name="经度")
     latitude = models.FloatField(null=True, blank=True, verbose_name="纬度")
     location = models.CharField(null=False, blank=False, max_length=200, verbose_name="仓库详细地址")
-    owner = models.ForeignKey(Owner, null=True, blank=True, on_delete=models.CASCADE
-                              , verbose_name="仓库法人")
+    owner = models.ForeignKey(Owner, null=True, blank=True, on_delete=models.CASCADE, verbose_name="仓库法人")
     owner_name = models.CharField(null=False, blank=False, max_length=11, verbose_name="仓库法人姓名")
     phone_number = models.CharField(null=False, blank=False, max_length=11, verbose_name="仓库联系电话")
     capacity = models.FloatField(null=True, blank=True, verbose_name="仓库总容量")

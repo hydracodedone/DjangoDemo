@@ -142,3 +142,25 @@ class LoginUserUpdateSerializer(serializers.Serializer):
     def validate_uid(uid):
         if not LoginModelAction.query_user_by_uid(uid):
             raise ValidationError("uid dose not match any user")
+
+
+class LoginUserLoginSerializer(serializers.Serializer):
+    def update(self, instance, validated_data):
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
+
+    def create(self, validated_data):
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
+
+    login_name = serializers.CharField(
+        allow_null=False,
+        allow_blank=False,
+        required=True,
+        trim_whitespace=True,
+    )
+
+    login_password = serializers.CharField(
+        allow_null=False,
+        allow_blank=False,
+        required=True,
+        trim_whitespace=True,
+    )

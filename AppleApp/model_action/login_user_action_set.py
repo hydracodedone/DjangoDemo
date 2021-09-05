@@ -6,6 +6,7 @@ from AppleApp.model_action.owner_action_set import OwnerModelAction
 from AppleApp.model_action.storage_pool_action_set import StoragePoolModelAction
 from AppleApp.model_action.storge_type_action_set import StorageTypeModelAction
 from AppleApp.models import LoginUser
+from FirstProject.util.constant.model_action_error import LOGIN_FAIL
 
 
 class LoginModelAction(object):
@@ -54,3 +55,28 @@ class LoginModelAction(object):
             return True
         else:
             return False
+
+    @staticmethod
+    def query_user_by_login_user_name_and_password(**validated_data):
+        login_name = validated_data.get("login_name")
+        login_password = validated_data.get("login_password")
+        user_instance = LoginUser.custom_objects.filter(
+            login_name=login_name,
+            login_password=login_password
+        ).only("uid", "login_name").first()
+        if not user_instance:
+            # todo
+            raise DRFValidationError(
+                {"name_or_password": LOGIN_FAIL}
+            )
+        else:
+            return user_instance
+
+    @staticmethod
+    def query_user_by_uid_and_user_name(**validate_data):
+        uid = validate_data.get("uid")
+        login_name = validate_data.get("login_name")
+        return LoginUser.custom_objects.filter(
+            login_name=login_name,
+            uid=uid
+        ).only("uid", "login_name").first()

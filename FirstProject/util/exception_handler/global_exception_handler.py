@@ -1,10 +1,10 @@
 import traceback
 
-from FirstProject.util.normal_response.global_response import ResponseFomatter
 from rest_framework.response import Response
 from rest_framework.status import HTTP_500_INTERNAL_SERVER_ERROR
 from rest_framework.views import exception_handler
 
+from FirstProject.util.customized_response.global_response import ResponseFomatter
 from FirstProject.util.logging.golobal_logging import MyAbstractLogger
 
 LOGGER = MyAbstractLogger(__name__).logger
