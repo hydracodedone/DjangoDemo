@@ -11,7 +11,7 @@ class AdministrativeDivisionSerializer(serializers.Serializer):
         if inferior_data:
             return AdministrativeDivisionSerializer(inferior_data, many=True).data
         else:
-            return None
+            return []
 
     def update(self, instance, validated_data):
         pass

@@ -5,7 +5,7 @@ from AppleApp.model_action.login_user_action_set import LoginModelAction
 from AppleApp.serializers.login_user_serializer import LoginUserCreateSerializer, LoginUserUpdateSerializer, \
     LoginUserLoginSerializer
 from AppleApp.serializers.token_serializer import TokenSerializer
-from FirstProject.util.customized_authentication.golobal_customized_authentication import UserLoginJWTAuthentication
+from FirstProject.util.customized_authentication_permission.token_manager import UserLoginJWTAuthentication
 from FirstProject.util.customized_response.global_response import ResponseFomatter
 
 

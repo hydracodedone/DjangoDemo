@@ -59,6 +59,25 @@ class LoginUserAbstractModel(CommonAbstractModel):
         super().save(*args, **kwargs)
 
 
+class Permission(CommonAbstractModel):
+    name = models.CharField(max_length=20, null=False, unique=True)
+    description = models.CharField(max_length=50, null=True)
+
+    class Meta:
+        db_table = "Permission"
+        verbose_name_plural = "权限"
+
+
+class PermissionGroup(CommonAbstractModel):
+    name = models.CharField(max_length=20, null=False, unique=True)
+    description = models.CharField(max_length=50, null=True)
+    permissions_detail = models.ManyToManyField(Permission, null=True)
+
+    class Meta:
+        db_table = "Permission_Group"
+        verbose_name_plural = "权限组"
+
+
 class LoginUser(LoginUserAbstractModel):
     name = models.CharField(null=False, blank=False, max_length=10, db_index=True, verbose_name="姓名")
     phone_number = models.CharField(null=False, blank=False, max_length=15, unique=True, verbose_name="联系电话")
@@ -66,6 +85,7 @@ class LoginUser(LoginUserAbstractModel):
     login_password = models.CharField(null=False, blank=False, max_length=200, verbose_name="密码")
     address = models.CharField(null=False, blank=False, max_length=100, verbose_name="地址")
     is_validate = models.BooleanField(null=False, blank=False, default=False, verbose_name="人工是否审核")
+    permission_groups = models.ManyToManyField(PermissionGroup, null=True)
 
     def __str__(self):
         return self.login_name

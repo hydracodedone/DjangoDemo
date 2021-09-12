@@ -4,6 +4,7 @@ from datetime import datetime, timedelta
 import jwt
 from django.apps import apps as django_apps
 from django.core.exceptions import ImproperlyConfigured
+from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_jwt.settings import api_settings
 
 from AppleApp.model_action.login_user_action_set import LoginModelAction
@@ -11,7 +12,7 @@ from FirstProject.util.constant.authentication_error import SIGNATURE_HAS_EXPIRE
     SIGNATURE_INVALID, SIGNATURE_FORGED
 
 
-class UserLoginJWTAuthenticationExecption(Exception):
+class UserLoginJWTAuthenticationExecption(AuthenticationFailed):
     pass
 
 
@@ -118,7 +119,6 @@ class UserLoginJWTAuthentication(object):
     def _check_user(cls, payload):
         user_name = cls.jwt_get_user_name_from_payload_handler(payload)
         user_uid = cls.jwt_get_user_id_from_payload_handler(payload)
-        print(payload)
         if not user_name or not user_uid:
             msg = SIGNATURE_INVALID
             raise UserLoginJWTAuthenticationExecption(msg)
@@ -160,3 +160,9 @@ class UserLoginJWTAuthentication(object):
         new_payload['orig_iat'] = orig_iat
         token = cls.jwt_encode_handler(new_payload)
         return cls.jwt_response_payload_handler(token)
+
+    @classmethod
+    def revify_token(cls, token):
+        payload = cls._check_payload(token=token)
+        user = cls._check_user(payload=payload)
+        return user
