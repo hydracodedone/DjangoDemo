@@ -1,6 +1,7 @@
 # encoding:UTF-8
 
 from django.contrib.auth.hashers import make_password
+from django.contrib.auth.models import User
 from django.db import models
 from django.db.models import QuerySet
 
@@ -60,8 +61,16 @@ class LoginUserAbstractModel(CommonAbstractModel):
 
 
 class Permission(CommonAbstractModel):
+    METHOD_CHOICE = (
+        ("1", "GET"),
+        ("2", "POST"),
+        ("3", "PUT"),
+        ("4", "DELETE")
+    )
     name = models.CharField(max_length=20, null=False, unique=True)
     description = models.CharField(max_length=50, null=True)
+    relative_url = models.CharField(max_length=20, null=False)
+    method = models.CharField(max_length=10, choices=METHOD_CHOICE, null=False)
 
     class Meta:
         db_table = "Permission"

@@ -1,6 +1,5 @@
 from django.conf import settings
 from rest_framework.pagination import PageNumberPagination
-from rest_framework.response import Response
 
 from FirstProject.util.customized_response.global_response import ResponseFomatter
 
