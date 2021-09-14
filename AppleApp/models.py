@@ -31,11 +31,18 @@ class CommonAbstractModel(models.Model):
 
 class LoginUserQuerySet(QuerySet):
     def update(self, **kwargs):
+        if "login_password" in kwargs.keys:
+            kwargs["login_password"] = make_password(kwargs["login_password"])
         return super().update(**kwargs)
 
     def create(self, **kwargs):
         kwargs["login_password"] = make_password(kwargs["login_password"])
-        return super().create(**kwargs)
+        return super(LoginUserQuerySet, self).create(**kwargs)
+
+    def filter(self, **kwargs):
+        if "login_password" in kwargs.keys:
+            kwargs["login_password"] = make_password(kwargs["login_password"])
+        return super(LoginUserQuerySet, self).filter(**kwargs)
 
 
 class LoginUserManager(models.Manager):
