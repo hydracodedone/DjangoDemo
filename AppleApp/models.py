@@ -1,5 +1,6 @@
 # encoding:UTF-8
 
+from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.models import User
 from django.db import models
@@ -32,16 +33,16 @@ class CommonAbstractModel(models.Model):
 class LoginUserQuerySet(QuerySet):
     def update(self, **kwargs):
         if "login_password" in kwargs.keys:
-            kwargs["login_password"] = make_password(kwargs["login_password"])
+            kwargs["login_password"] = make_password(kwargs["login_password"], settings.SECRET_KEY, "pbkdf2_sha256")
         return super().update(**kwargs)
 
     def create(self, **kwargs):
-        kwargs["login_password"] = make_password(kwargs["login_password"])
+        kwargs["login_password"] = make_password(kwargs["login_password"], settings.SECRET_KEY, "pbkdf2_sha256")
         return super(LoginUserQuerySet, self).create(**kwargs)
 
     def filter(self, **kwargs):
         if "login_password" in kwargs.keys:
-            kwargs["login_password"] = make_password(kwargs["login_password"])
+            kwargs["login_password"] = make_password(kwargs["login_password"], settings.SECRET_KEY, "pbkdf2_sha256")
         return super(LoginUserQuerySet, self).filter(**kwargs)
 
 

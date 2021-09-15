@@ -1,3 +1,4 @@
+import logging
 import traceback
 
 from rest_framework.response import Response
@@ -7,7 +8,8 @@ from rest_framework.views import exception_handler
 from FirstProject.util.customized_response.global_response import ResponseFomatter
 from FirstProject.util.logging.golobal_logging import MyAbstractLogger
 
-LOGGER = MyAbstractLogger(__name__).logger
+LOGGER = logging.getLogger("error")
+
 
 
 def custom_exception_handler(exc, context):

@@ -26,6 +26,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    "FirstProject.util.customized_middlewares.custom_middleware.GlobalSqlMiddleWare",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -146,10 +147,24 @@ LOGGING = {
             'formatter': 'standard',
             'encoding': 'utf-8',
         },
+        'sql_record': {
+            'level': 'DEBUG',
+            'class': 'logging.handlers.RotatingFileHandler',
+            'filename': os.path.join(BASE_LOG_DIR, "sql.log"),
+            'maxBytes': 1024 * 1024 * 20,
+            'backupCount': 2,
+            'formatter': 'standard',
+            'encoding': 'utf-8',
+        },
     },
     'loggers': {
-        '': {
+        'error': {
             'handlers': ['console', 'error'],
+            'level': 'DEBUG',
+            'propagate': True
+        },
+        'sql': {
+            'handlers': ['console', 'sql_record'],
             'level': 'DEBUG',
             'propagate': True
         },
