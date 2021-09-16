@@ -1,10 +1,16 @@
+from rest_framework import exceptions
 from rest_framework.authentication import BaseAuthentication
 
+from AppleApp.serializers.token_serializer import TokenSerializer
 from FirstProject.util.customized_authentication_permission.token_manager import UserLoginJWTAuthentication
 
 
 class JWTAutentication(BaseAuthentication):
     def authenticate(self, request):
-        token_encrypt = request.POST.get("token")
-        user_instance = UserLoginJWTAuthentication.revify_token(token_encrypt)
-        return user_instance, True
+        serializer = TokenSerializer(many=False, data=request.data)
+        if serializer.is_valid():
+            user_instance = UserLoginJWTAuthentication.revify_token(serializer.validated_data.get("token"))
+            return user_instance, True
+        else:
+            raise exceptions.AuthenticationFailed(serializer.errors)
+

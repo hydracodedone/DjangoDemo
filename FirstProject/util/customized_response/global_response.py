@@ -1,7 +1,16 @@
+ADD = "ADD"
+MODIFY = "MODIFY"
+DELETE = "DELETE"
+
+
 class ResponseFomatter(object):
 
     @staticmethod
-    def get_normal_response(data):
+    def get_normal_response(data="", process_type="QUERY"):
+        if process_type.upper() not in ["ADD", "MODIFY", "DELETE"]:
+            data = data
+        else:
+            data = "{} SUCCESS".format(process_type.upper())
         return {
             "msg": "handle success",
             "err": "",

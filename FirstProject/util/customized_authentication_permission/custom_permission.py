@@ -22,3 +22,15 @@ class CustomPermission(BasePermission):
 
     def has_object_permission(self, request, view, obj):
         pass
+
+
+class CustomTestPermission(BasePermission):
+    def has_permission(self, request: Request, view):
+        if not hasattr(request, "user"):
+            raise exceptions.NotAuthenticated()
+        if not hasattr(request, "auth"):
+            raise exceptions.NotAuthenticated()
+        if not request.auth:
+            raise exceptions.NotAuthenticated()
+        else:
+            return True

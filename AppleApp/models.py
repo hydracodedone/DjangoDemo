@@ -32,17 +32,18 @@ class CommonAbstractModel(models.Model):
 
 class LoginUserQuerySet(QuerySet):
     def update(self, **kwargs):
-        if "login_password" in kwargs.keys:
-            kwargs["login_password"] = make_password(kwargs["login_password"], settings.SECRET_KEY, "pbkdf2_sha256")
+        if "login_password" in kwargs.keys():
+            kwargs["login_password"] = make_password(kwargs["login_password"], settings.PASSWORD_SALT, "pbkdf2_sha256")
         return super().update(**kwargs)
 
     def create(self, **kwargs):
-        kwargs["login_password"] = make_password(kwargs["login_password"], settings.SECRET_KEY, "pbkdf2_sha256")
+        if "login_password" in kwargs.keys():
+            kwargs["login_password"] = make_password(kwargs["login_password"], settings.PASSWORD_SALT, "pbkdf2_sha256")
         return super(LoginUserQuerySet, self).create(**kwargs)
 
     def filter(self, **kwargs):
-        if "login_password" in kwargs.keys:
-            kwargs["login_password"] = make_password(kwargs["login_password"], settings.SECRET_KEY, "pbkdf2_sha256")
+        if "login_password" in kwargs.keys():
+            kwargs["login_password"] = make_password(kwargs["login_password"], settings.PASSWORD_SALT, "pbkdf2_sha256")
         return super(LoginUserQuerySet, self).filter(**kwargs)
 
 
@@ -88,7 +89,7 @@ class Permission(CommonAbstractModel):
 class PermissionGroup(CommonAbstractModel):
     name = models.CharField(max_length=20, null=False, unique=True)
     description = models.CharField(max_length=50, null=True)
-    permissions_detail = models.ManyToManyField(Permission, null=True)
+    permissions_detail = models.ManyToManyField(Permission)
 
     class Meta:
         db_table = "Permission_Group"
@@ -102,7 +103,7 @@ class LoginUser(LoginUserAbstractModel):
     login_password = models.CharField(null=False, blank=False, max_length=200, verbose_name="密码")
     address = models.CharField(null=False, blank=False, max_length=100, verbose_name="地址")
     is_validate = models.BooleanField(null=False, blank=False, default=False, verbose_name="人工是否审核")
-    permission_groups = models.ManyToManyField(PermissionGroup, null=True)
+    permission_groups = models.ManyToManyField(PermissionGroup)
 
     def __str__(self):
         return self.login_name

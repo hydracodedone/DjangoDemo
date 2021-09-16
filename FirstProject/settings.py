@@ -7,7 +7,7 @@ import os
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 SECRET_KEY = "a2e(&xoe5t!2gs_m9c$)jc+&y6p90=0w^ve@@_09!p%76782j1"
-
+PASSWORD_SALT = "asdioajcancanfpfaodjopjapsdjmsdajio+"
 DEBUG = True
 
 ALLOWED_HOSTS = []
@@ -23,6 +23,7 @@ INSTALLED_APPS = [
     "rest_framework",
     "djorm_pool",
     "AppleApp",
+    "django_filters",
 ]
 
 MIDDLEWARE = [
@@ -97,6 +98,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.AutoField"
 REST_FRAMEWORK = {
     "DEFAULT_SCHEMA_CLASS": "rest_framework.schemas.coreapi.AutoSchema",
     "EXCEPTION_HANDLER": "FirstProject.util.exception_handler.global_exception_handler.custom_exception_handler",
+    'DEFAULT_FILTER_BACKENDS': ('django_filters.rest_framework.DjangoFilterBackend',),
 }
 
 SIMPLEUI_HOME_INFO = False

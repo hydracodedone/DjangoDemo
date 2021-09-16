@@ -20,7 +20,7 @@ class LoginModelAction(object):
             raise DataInvalidationException(err.message_dict)
         else:
             with transaction.atomic():
-                user_instance.save()
+                user_instance = LoginUser.custom_objects.create(**validate_data)
                 owner = OwnerModelAction.create_new_owner(
                     **{
                         "user_id": user_instance.uid,
@@ -78,4 +78,4 @@ class LoginModelAction(object):
         return LoginUser.custom_objects.filter(
             login_name=login_name,
             uid=uid
-        ).only("uid", "login_name").first()
+        ).first()
