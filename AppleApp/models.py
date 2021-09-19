@@ -29,6 +29,10 @@ class CommonAbstractModel(models.Model):
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
 
+    def delete(self, using=None, keep_parents=False):
+        self.is_deleted = True
+        self.save()
+
 
 class LoginUserQuerySet(QuerySet):
     def update(self, **kwargs):
@@ -270,6 +274,7 @@ class AppleInstance(CommonAbstractModel):
     is_available = models.BooleanField(null=False, blank=False, default=True, verbose_name="是否愿意出售")
     is_empty = models.BooleanField(null=False, blank=False, default=True, verbose_name="是否售空")
     note = models.CharField(null=True, blank=True, max_length=300, verbose_name="备注")
+    custom_objects = CommonManager()
 
     def __str__(self):
         return "苹果类型:{},苹果等级:{},苹果总量:{},苹果预期价格:{}".format(

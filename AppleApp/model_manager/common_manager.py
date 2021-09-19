@@ -1,3 +1,5 @@
+import datetime
+
 from django.db import models
 from django.db.models import QuerySet
 
@@ -8,6 +10,9 @@ class CommonQuerySet(QuerySet):
 
     def create(self, **kwargs):
         return super().create(**kwargs)
+
+    def delete(self):
+        super().update(is_deleted=True, delete_time=datetime.datetime.now())
 
 
 class CommonManager(models.Manager):

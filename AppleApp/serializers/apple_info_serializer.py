@@ -1,6 +1,8 @@
 from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
 
-from AppleApp.models import AppleType, AppleLevel, AppleMaturity, ApplePesticideResidue, ApplePackingType
+from AppleApp.models import AppleType, AppleLevel, AppleMaturity, ApplePesticideResidue, ApplePackingType, AppleInstance
+from FirstProject.util.constant.validate_error import MODIFY_ILLEGAL, DATA_IS_SOFTED_DELETED
 from FirstProject.util.validate_function.validate_function import positive_float_int_validator
 
 
@@ -42,7 +44,7 @@ class AppleInstanceAppleInfoOriginalSerializer(serializers.Serializer):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
 
-class AppleInstanceAppleInfoWriteSerializer(AppleInstanceAppleInfoOriginalSerializer):
+class AppleInstanceAppleInfoCreateSerializer(AppleInstanceAppleInfoOriginalSerializer):
     is_available = serializers.BooleanField(required=True, allow_null=False)
     note = serializers.CharField(required=False, allow_null=False)
 
@@ -51,3 +53,76 @@ class AppleInstanceAppleInfoWriteSerializer(AppleInstanceAppleInfoOriginalSerial
 
     def create(self, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
+
+
+class AppleInstanceAppleInfoUpdateSerializer(AppleInstanceAppleInfoOriginalSerializer):
+    uid = serializers.PrimaryKeyRelatedField(
+        required=True,
+        queryset=AppleInstance.custom_objects.only("uid"),
+        allow_null=False,
+    )
+    is_available = serializers.BooleanField(required=False, allow_null=False)
+    note = serializers.CharField(required=False, allow_null=False)
+    type = serializers.PrimaryKeyRelatedField(
+        queryset=AppleType.custom_objects.only("uid"),
+        required=False,
+        allow_null=False,
+    )
+    level = serializers.PrimaryKeyRelatedField(
+        queryset=AppleLevel.custom_objects.only("uid"),
+        required=False,
+        allow_null=False,
+    )
+    maturity = serializers.PrimaryKeyRelatedField(
+        queryset=AppleMaturity.custom_objects.only("uid"),
+        required=False,
+        allow_null=False,
+    )
+    pesticide_residue = serializers.PrimaryKeyRelatedField(
+        queryset=ApplePesticideResidue.custom_objects.only("uid"),
+        required=False,
+        allow_null=False,
+    )
+    packing_type = serializers.PrimaryKeyRelatedField(
+        queryset=ApplePackingType.custom_objects.only("uid"),
+        required=False,
+        allow_null=False,
+    )
+    batch_name = serializers.CharField(required=False, allow_null=False)
+    sum_remaining = serializers.FloatField(validators=[positive_float_int_validator], required=False, allow_null=False)
+    price = serializers.FloatField(validators=[positive_float_int_validator], required=False, allow_null=False)
+    product_time = serializers.DateField(required=False, allow_null=False)
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
+
+    def create(self, validated_data):
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
+
+    def validate_uid(self, data: AppleInstance):
+        if data.is_deleted:
+            raise ValidationError(DATA_IS_SOFTED_DELETED.format(data.uid))
+        if not data.owner.user_id == self.context.get("user_uid"):
+            raise ValidationError(MODIFY_ILLEGAL)
+
+
+class AppleInstanceAppleInfoDeleteSerializer(serializers.Serializer):
+    def update(self, instance, validated_data):
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
+
+    def create(self, validated_data):
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
+
+    uid = serializers.PrimaryKeyRelatedField(
+        required=True,
+        queryset=AppleInstance.custom_objects.only("uid"),
+        allow_null=False
+    )
+
+    def validate_uid(self, data):
+        if data.is_deleted:
+            raise ValidationError(DATA_IS_SOFTED_DELETED.format(data.uid))
+        if not data.owner.user_id == self.context.get("user_uid"):
+            raise ValidationError(MODIFY_ILLEGAL)
+        else:
+            return data
