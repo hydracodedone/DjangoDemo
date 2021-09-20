@@ -28,14 +28,12 @@ swagger_doc_url = [
     path("docs/swagger_doc/", schema_view.with_ui("swagger", cache_timeout=0)),
     path("docs/swagger_redoc/", schema_view.with_ui("redoc", cache_timeout=0)),
 ]
-
 related_info_url = [
     path("common/administrative_division/", AdministrativeDivisionAPIView.as_view()),
     path("common/user_info_related/", UserRelatedInfoAPIView.as_view()),
     path("common/apple_info_related/", AppleFeatureApi.as_view()),
     path("common/storage_info_related/", StorageInfoAPIView.as_view()),
 ]
-
 token_management_url = [
     path("token/", TokenManagementAPIView.as_view()),
 ]

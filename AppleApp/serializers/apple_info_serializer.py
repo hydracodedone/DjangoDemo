@@ -124,4 +124,3 @@ class AppleInstanceAppleInfoDeleteSerializer(AppleInstanceUidSerializer):
 
     def create(self, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
-

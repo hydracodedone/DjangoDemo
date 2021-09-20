@@ -2,26 +2,6 @@ import requests
 
 
 def query_user_related_info():
-    """
-    {
-      "msg": "handle success",
-      "err": "",
-      "data": [
-        {
-          "owner_type_uid": "5ebe7824-def1-4fea-be9a-1a5863cc8c4e",
-          "owner_type_name": "果农"
-        },
-        {
-          "owner_type_uid": "6cbd4471-e2d3-49fd-a87b-1b42558feaf4",
-          "owner_type_name": "顾客"
-        },
-        {
-          "owner_type_uid": "a1498f49-836f-41c0-97ba-87239afb0316",
-          "owner_type_name": "供应商"
-        }
-      ]
-    }
-    """
     query_owner_type = requests.get("http://localhost:8000/common/user_info_related/")
     print(query_owner_type.text)
 
@@ -93,6 +73,7 @@ def get_storage_info_related_info():
 
 
 if __name__ == '__main__':
+    query_user_related_info()
     get_administrative_division_info()
     get_apple_related_info()
     get_storage_info_related_info()

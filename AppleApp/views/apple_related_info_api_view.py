@@ -4,10 +4,8 @@ from rest_framework.views import APIView
 
 from AppleApp.model_action.apple_feature_action_set import AppleFeatureModelAction
 from AppleApp.serializers.apple_feature_serializer import AppleFeatureSerializer
-from FirstProject.util.customized_authentication_permission.custom_authentication import JWTAutentication, \
-    custom_authentication_decorator
-from FirstProject.util.customized_authentication_permission.custom_permission import CustomTestPermission, \
-    custom_permission_decorator
+from FirstProject.util.customized_authentication_permission.custom_authentication import JWTAutentication
+from FirstProject.util.customized_authentication_permission.custom_permission import CustomTestPermission
 from FirstProject.util.customized_response.global_response import ResponseFomatter
 
 
