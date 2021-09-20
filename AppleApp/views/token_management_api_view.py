@@ -1,7 +1,8 @@
+from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from AppleApp.model_action.login_user_action_set import LoginModelAction
+from AppleApp.model_action.login_user_management import LoginModelAction
 from AppleApp.serializers.login_user_serializer import LoginUserLoginSerializer
 from AppleApp.serializers.token_serializer import TokenSerializer
 from FirstProject.util.customized_authentication_permission.token_manager import UserLoginJWTAuthentication
@@ -10,6 +11,10 @@ from FirstProject.util.customized_response.global_response import ResponseFomatt
 
 class TokenManagementAPIView(APIView):
     @staticmethod
+    @swagger_auto_schema(
+        security=[],
+        operation_description="token获取",
+    )
     def post(request):
         data = request.data
         serializer = LoginUserLoginSerializer(many=False, data=data)
@@ -22,6 +27,10 @@ class TokenManagementAPIView(APIView):
         return Response(response_data)
 
     @staticmethod
+    @swagger_auto_schema(
+        security=[],
+        operation_description="token更新",
+    )
     def put(request):
         data = request.data
         serializer = TokenSerializer(many=False, data=data)

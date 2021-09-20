@@ -4,7 +4,7 @@ from rest_framework import exceptions
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
 
-from AppleApp.model_action.permission_action_set import PermissionActionSet
+from AppleApp.model_action.permission_management import PermissionActionSet
 
 
 class CustomPermission(BasePermission):

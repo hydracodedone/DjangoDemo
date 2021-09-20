@@ -2,8 +2,8 @@ from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from AppleApp.model_action.apple_action_set import AppleModelAction
-from AppleApp.serializers.apple_info_serializer import AppleInstanceCreateSerializer, \
+from AppleApp.model_action.personal_apple_management import AppleModelAction
+from AppleApp.serializers.personal_apple_info_serializer import AppleInstanceCreateSerializer, \
     AppleInstanceAppleInfoUpdateSerializer, AppleInstanceAppleInfoDeleteSerializer
 from FirstProject.util.customized_authentication_permission.custom_authentication import JWTAutentication
 from FirstProject.util.customized_authentication_permission.custom_permission import CustomTestPermission
@@ -26,7 +26,7 @@ class AppleInfoManagerAPIView(APIView):
         if serializer.is_valid():
             validated_data = serializer.validated_data
             validated_data.update(owner_id=owner_id)
-            AppleModelAction.create_apple_info(**validated_data)
+            AppleModelAction.create_new_batch_apple(**validated_data)
         else:
             response_data = ResponseFomatter.get_validated_error(serializer.errors)
             return Response(response_data)

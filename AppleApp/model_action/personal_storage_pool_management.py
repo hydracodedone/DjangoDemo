@@ -7,13 +7,13 @@ from AppleApp.models import StoragePool
 class StoragePoolModelAction(object):
     @staticmethod
     def create_new_self_storage_pool(**validated_data):
-        pool_type_id = validated_data.get("pool_type_id")
+        pool_type = validated_data.get("pool_type")
         owner_id = validated_data.get("owner_id")
         owner_name = validated_data.get("owner_name")
         phone_number = validated_data.get("phone_number")
         location = validated_data.get("location")
         storage_pool_instance = StoragePool(
-            pool_type_id=pool_type_id,
+            pool_type=pool_type,
             owner_id=owner_id,
             owner_name=owner_name,
             phone_number=phone_number,
@@ -26,7 +26,3 @@ class StoragePoolModelAction(object):
             raise DRFValidationError(err.message_dict)
         else:
             storage_pool_instance.save()
-
-    @staticmethod
-    def query_self_storage_pool_info(owner_id):
-        return StoragePool.custom_objects.filter(owner_id=owner_id)

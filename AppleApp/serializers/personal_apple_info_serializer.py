@@ -67,7 +67,7 @@ class AppleInstanceOriginalSerializer(serializers.Serializer):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
 
-class AppleInstanceCreateSerializer(AppleInstanceOriginalSerializer):
+class AppleInstanceCreateSerializer(AppleInstanceOriginalSerializer, serializers.Serializer):
     is_available = serializers.BooleanField(required=True, allow_null=False)
     note = serializers.CharField(required=False, allow_null=False)
 
@@ -78,7 +78,7 @@ class AppleInstanceCreateSerializer(AppleInstanceOriginalSerializer):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
 
-class AppleInstanceAppleInfoUpdateSerializer(AppleInstanceUidSerializer):
+class AppleInstanceAppleInfoUpdateSerializer(AppleInstanceUidSerializer, serializers.Serializer):
     is_available = serializers.BooleanField(required=False, allow_null=False)
     note = serializers.CharField(required=False, allow_null=False)
     type = serializers.PrimaryKeyRelatedField(

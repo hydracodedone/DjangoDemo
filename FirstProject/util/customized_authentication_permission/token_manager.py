@@ -7,7 +7,7 @@ from django.core.exceptions import ImproperlyConfigured
 from rest_framework.exceptions import AuthenticationFailed
 from rest_framework_jwt.settings import api_settings
 
-from AppleApp.model_action.login_user_action_set import LoginModelAction
+from AppleApp.model_action.login_user_management import LoginModelAction
 from FirstProject.util.constant.authentication_error import SIGNATURE_HAS_EXPIRED, SIGNATURE_DECODE_FAIL, \
     SIGNATURE_INVALID, SIGNATURE_FORGED
 

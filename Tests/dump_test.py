@@ -1,40 +1,53 @@
+import datetime
+
 import requests
 
 
 def query_user_related_info():
-    query_owner_type = requests.get("http://localhost:8000/common/user_info_related/")
-    print(query_owner_type.text)
+    query_owner_type_response = requests.get("http://localhost:8000/common/user_info_related/")
+    return query_owner_type_response.json()
 
 
 def create_new_user():
     data = {
-        "name": "王小二",
-        "phone_number": "15719630526",
-        "login_name": "Hydra",
+        "name": "王王王",
+        "phone_number": "15719630529",
+        "login_name": "Hydra3",
         "login_password": "123456",
         "address": "甘肃省平凉市泾川县",
-        "owner_type_uid": "a1498f49-836f-41c0-97ba-87239afb0316"
+        "owner_type_uid": query_user_related_info().get("data").get("owner_type")[0].get("owner_type_uid")
     }
+    print(data)
     create_user_response = requests.post("http://localhost:8000/management/user/", json=data)
     print(create_user_response.json())
 
 
-def update_user():
+def update_user(token_data):
     data = {
-        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjoiNzAyYmMwM2UtZGU4Ny00YWQwLWI4NzItMGRkMDYxMDliMGQ2IiwidXNlcl9uYW1lIjoiSHlkcmEiLCJleHAiOjE2MzIxNDk2NDksIm9yaWdfaWF0IjoxNjMyMTQ3ODQ5fQ.frL2X0CdLBl2nYLMQdiKLwWbYL5zTwDFNfaWLQ1jl-o",
-        "login_password": "1234567",
+        "token": token_data, "login_password": "1234567",
     }
     update_user_response = requests.put("http://localhost:8000/management/user/", json=data)
     print(update_user_response.json())
 
 
-def refresh_token(token):
+def refresh_token(token_data):
     refresh_data = {
-        "token": token
+        "token": token_data
     }
     generate_token_response = requests.put("http://localhost:8000/token/", json=refresh_data)
     print(generate_token_response.json())
     return generate_token_response.json().get("data").get("token")
+
+
+def first_generate_token():
+    generate_data = {
+        "login_name": "Hydra3",
+        "login_password": "123456"
+    }
+    generate_token_response = requests.post("http://localhost:8000/token/", json=generate_data)
+    print(generate_token_response.json())
+    token_data = generate_token_response.json().get("data").get("token")
+    return token_data
 
 
 def generate_token():
@@ -44,8 +57,8 @@ def generate_token():
     }
     generate_token_response = requests.post("http://localhost:8000/token/", json=generate_data)
     print(generate_token_response.json())
-    token = generate_token_response.json().get("data").get("token")
-    return token
+    token_data = generate_token_response.json().get("data").get("token")
+    return token_data
 
 
 def get_administrative_division_info():
@@ -62,6 +75,7 @@ def get_apple_related_info():
     }
     apple_related_info_response = requests.get("http://localhost:8000/common/apple_info_related/", params=data)
     print(apple_related_info_response.json())
+    return apple_related_info_response.json()
 
 
 def get_storage_info_related_info():
@@ -72,8 +86,29 @@ def get_storage_info_related_info():
     print(apple_related_info_response.json())
 
 
+def create_new_batch_apple_info():
+    related_info = get_apple_related_info()
+
+    data = {
+        "token": generate_token(),
+        "type": related_info.get("data").get("apple_type")[0].get("apple_type_uid"),
+        "level": related_info.get("data").get("apple_level")[0].get("apple_level_uid"),
+        "maturity": related_info.get("data").get("apple_maturity")[0].get("apple_maturity_uid"),
+        "pesticide_residue": related_info.get("data").get("apple_pesticide_residue")[0].get(
+            "apple_pesticde_residue_uid"),
+        "packing_type": related_info.get("data").get("apple_packing_type")[0].get("apple_packing_type_uid"),
+        "batch_name": "my batch",
+        "sum_remaining": "1000",
+        "price": "1.2",
+        "product_time": datetime.datetime.date(datetime.datetime.now()).strftime("%Y-%m-%d"),
+        "is_available": True,
+    }
+    apple_create_response = requests.post("http://localhost:8000/management/apple/", json=data)
+    print(apple_create_response.json())
+
+
 if __name__ == '__main__':
-    query_user_related_info()
-    get_administrative_division_info()
-    get_apple_related_info()
-    get_storage_info_related_info()
+    create_new_user()
+    token = first_generate_token()
+    update_user(token)
+    create_new_batch_apple_info()

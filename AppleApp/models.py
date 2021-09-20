@@ -7,6 +7,7 @@ from django.db import models
 from django.db.models import QuerySet
 
 from AppleApp.model_manager.common_manager import CommonManager
+from FirstProject.util.constant.constant import STORAGE_PRIVITE, STORAGE_COMMERCIAL, LOG_TYPE_INPUT, LOG_TYPE_OUTPUT
 from FirstProject.util.validate_function.validate_function import uuid_general
 
 
@@ -24,6 +25,7 @@ class CommonAbstractModel(models.Model):
         super().clean_fields()
 
     def clean(self):
+        print("------------model constrain check---------------")
         super().clean()
 
     def save(self, *args, **kwargs):
@@ -158,21 +160,12 @@ class Owner(OwnerAbstractModel):
         verbose_name_plural = "商家"
 
 
-class StoragePoolType(CommonAbstractModel):
-    pool_type = models.CharField(null=False, blank=False, unique=True, max_length=20, verbose_name="仓库类型")
-    custom_objects = CommonManager()
-
-    def __str__(self):
-        return self.pool_type
-
-    class Meta:
-        db_table = "Storage_Pool_Type"
-        verbose_name_plural = "仓库类型"
-
-
 class StoragePool(CommonAbstractModel):
-    pool_type = models.ForeignKey(StoragePoolType, null=False, blank=False, on_delete=models.CASCADE,
-                                  verbose_name="仓库类型")
+    pool_type_choice = (
+        (STORAGE_PRIVITE, "自用"),
+        (STORAGE_COMMERCIAL, "商用"),
+    )
+    pool_type = models.IntegerField(choices=pool_type_choice, null=False, blank=False, verbose_name="仓库类型")
     longtitude = models.FloatField(null=True, blank=True, verbose_name="经度")
     latitude = models.FloatField(null=True, blank=True, verbose_name="纬度")
     location = models.CharField(null=False, blank=False, max_length=200, verbose_name="仓库详细地址")
@@ -180,7 +173,8 @@ class StoragePool(CommonAbstractModel):
     owner_name = models.CharField(null=False, blank=False, max_length=11, verbose_name="仓库法人姓名")
     phone_number = models.CharField(null=False, blank=False, max_length=11, verbose_name="仓库联系电话")
     capacity = models.FloatField(null=True, blank=True, verbose_name="仓库总容量")
-    is_internal_managed = models.BooleanField(null=False, blank=False, default=True, verbose_name="是否为内部维护信息")
+    capacity_remaining = models.FloatField(null=True, blank=True, verbose_name="仓库剩余容量")
+    is_internal_managed = models.BooleanField(null=False, blank=False, default=False, verbose_name="是否为内部维护信息")
     custom_objects = CommonManager()
 
     def __str__(self):
@@ -308,26 +302,12 @@ class AppleInstanceThroughStorage(CommonAbstractModel):
         verbose_name_plural = "苹果库存信息"
 
 
-class StoragePoolQuantityChangeLogType(CommonAbstractModel):
-    add_or_sub_choice = (
-        (1, "add"),
-        (-1, "sub")
-    )
-    change_type = models.CharField(null=False, blank=False, unique=True, max_length=10, verbose_name="账目类型")
-    add_or_sub = models.IntegerField(null=False, blank=False, choices=add_or_sub_choice, default=1)
-    custom_objects = CommonManager()
-
-    def __str__(self):
-        return self.change_type
-
-    class Meta:
-        db_table = "Storage_Pool_Quantity_ChangeLog_Type"
-        verbose_name_plural = "账目类型"
-
-
 class StoragePoolQuantityChangeLog(CommonAbstractModel):
-    record_type = models.ForeignKey(StoragePoolQuantityChangeLogType, null=False, blank=False, on_delete=models.CASCADE,
-                                    verbose_name="账目类型")
+    change_choice = (
+        (LOG_TYPE_INPUT, "入库"),
+        (LOG_TYPE_OUTPUT, "出库")
+    )
+    record_type = models.IntegerField(choices=change_choice, null=False, blank=False, verbose_name="账目类型")
     storage = models.ForeignKey(AppleInstanceThroughStorage, null=False, blank=False, on_delete=models.CASCADE,
                                 verbose_name="对应仓库")
     change_number = models.FloatField(null=False, blank=False, verbose_name="变更数量")

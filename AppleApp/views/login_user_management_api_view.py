@@ -1,7 +1,8 @@
+from drf_yasg2.utils import swagger_auto_schema
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from AppleApp.model_action.login_user_action_set import LoginModelAction
+from AppleApp.model_action.login_user_management import LoginModelAction
 from AppleApp.serializers.login_user_serializer import LoginUserCreateSerializer, LoginUserUpdateSerializer
 from FirstProject.util.customized_authentication_permission.custom_authentication import JWTAutentication, \
     custom_authentication_decorator
@@ -12,6 +13,10 @@ from FirstProject.util.customized_response.global_response import ResponseFomatt
 
 class LoginUserApi(APIView):
     @staticmethod
+    @swagger_auto_schema(
+        security=[],
+        operation_description="用户注册",
+    )
     def post(request):
         data = request.data
         serializer = LoginUserCreateSerializer(many=False, data=data)
@@ -24,6 +29,10 @@ class LoginUserApi(APIView):
         return Response(response_data)
 
     @staticmethod
+    @swagger_auto_schema(
+        security=[],
+        operation_description="用户修改",
+    )
     @custom_authentication_decorator((JWTAutentication,))
     @custom_permission_decorator((CustomTestPermission,))
     def put(request):

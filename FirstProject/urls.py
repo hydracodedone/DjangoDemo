@@ -4,13 +4,12 @@ from django.urls import path
 from drf_yasg2 import openapi
 from drf_yasg2.views import get_schema_view
 
-from AppleApp.views.administrative_division_api_view import AdministrativeDivisionAPIView
-from AppleApp.views.apple_api_view import AppleInfoManagerAPIView
+from AppleApp.views.administration_area_api_view import AdministrativeDivisionAPIView
 from AppleApp.views.apple_related_info_api_view import AppleFeatureApi
-from AppleApp.views.storage_related_info_api_view import StorageInfoAPIView
-from AppleApp.views.token_api_view import TokenManagementAPIView
-from AppleApp.views.user_api_view import LoginUserApi
-from AppleApp.views.user_related_info_api_view import UserRelatedInfoAPIView
+from AppleApp.views.login_user_management_api_view import LoginUserApi
+from AppleApp.views.login_user_related_info_api_view import UserRelatedInfoAPIView
+from AppleApp.views.personal_apple_management_api_view import AppleInfoManagerAPIView
+from AppleApp.views.token_management_api_view import TokenManagementAPIView
 
 schema_view = get_schema_view(
     openapi.Info(
@@ -32,7 +31,6 @@ related_info_url = [
     path("common/administrative_division/", AdministrativeDivisionAPIView.as_view()),
     path("common/user_info_related/", UserRelatedInfoAPIView.as_view()),
     path("common/apple_info_related/", AppleFeatureApi.as_view()),
-    path("common/storage_info_related/", StorageInfoAPIView.as_view()),
 ]
 token_management_url = [
     path("token/", TokenManagementAPIView.as_view()),

@@ -16,9 +16,18 @@ class OwnerTypeUidSeriazlier(serializers.Serializer):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
 
-class OwnerTypeSerializer(serializers.Serializer):
-    owner_type_uid = serializers.PrimaryKeyRelatedField(read_only=True, source="uid")
+class OwnerTypeSerializer(OwnerTypeUidSeriazlier, serializers.Serializer):
     owner_type_name = serializers.CharField(allow_null=False, allow_blank=False)
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
+
+    def create(self, validated_data):
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
+
+
+class UserRelatedInfoSerializer(serializers.Serializer):
+    owner_type = OwnerTypeSerializer(many=True)
 
     def update(self, instance, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")

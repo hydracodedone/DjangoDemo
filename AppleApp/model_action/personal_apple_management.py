@@ -7,7 +7,8 @@ from FirstProject.util.customized_exception.global_exception import DataInvalida
 class AppleModelAction(object):
 
     @staticmethod
-    def create_apple_info(**validated_data):
+    def create_new_batch_apple(**validated_data):
+        validated_data.update(**{"is_empty": False})
         apple_instance = AppleInstance(**validated_data)
         try:
             apple_instance.full_clean()

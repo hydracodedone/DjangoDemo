@@ -6,8 +6,7 @@ from django.db.models import FloatField, Sum
 from django.utils.safestring import mark_safe
 
 from AppleApp.models import LoginUser, OwnerType, Owner, AppleType, AppleLevel, AppleMaturity, ApplePesticideResidue, \
-    ApplePackingType, AppleInstance, StoragePoolType, StoragePool, AppleInstanceThroughStorage, \
-    StoragePoolQuantityChangeLogType, StoragePoolQuantityChangeLog
+    ApplePackingType, AppleInstance, StoragePool, AppleInstanceThroughStorage, StoragePoolQuantityChangeLog
 
 
 class AdminAbstract(ModelAdmin):
@@ -183,11 +182,6 @@ class AdminAppleInstance(AdminAbstract):
     )
 
 
-@admin.register(StoragePoolType)
-class AdminStoragePoolType(AdminAbstract):
-    pass
-
-
 @admin.register(StoragePool)
 class AdminStoragePool(AdminAbstract):
     def get_owner_type_name(self, obj):
@@ -240,11 +234,6 @@ class AdminAppleInstanceThroughStorage(AdminAbstract):
                     "incoming_time", "get_record_info"]
     list_filter = ["storage_pool__pool_type", "storage_pool__is_internal_managed"]
     search_fields = ["apple_instance__uid"]
-
-
-@admin.register(StoragePoolQuantityChangeLogType)
-class AdminStoragePoolQuantityChangeLogType(AdminAbstract):
-    pass
 
 
 @admin.register(StoragePoolQuantityChangeLog)
