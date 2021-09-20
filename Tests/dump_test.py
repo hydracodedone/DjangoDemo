@@ -107,7 +107,6 @@ def create_new_batch_apple_info():
 
 
 if __name__ == '__main__':
-
     name = "王译"
     phone_number = "17302841531"
     login_name = "hydra5"
