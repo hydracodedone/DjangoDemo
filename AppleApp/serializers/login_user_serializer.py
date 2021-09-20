@@ -2,7 +2,7 @@ from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
 from AppleApp.models import LoginUser
-from AppleApp.serializers.login_user_related_info_serializer import OwnerTypeUidSeriazlier
+from AppleApp.serializers.login_user_related_info_serializer import OwnerTypeUidForLoginUserSeriazlier
 from FirstProject.util.constant.validate_error import PHONE_HAS_BEEN_REGISTERED, LOGIN_NAME_HAS_BEEN_REGISTERED
 from FirstProject.util.validate_function.validate_function import name_validator, phone_number_validator, \
     login_username_validator, password_validator
@@ -25,7 +25,7 @@ class LoginUserOriginalSerializer(serializers.Serializer):
         validators=[
             phone_number_validator,
             UniqueValidator(
-                queryset=LoginUser.custom_objects.all(),
+                queryset=LoginUser.custom_objects.only("phone_number"),
                 message=PHONE_HAS_BEEN_REGISTERED)
         ])
     login_name = serializers.CharField(
@@ -54,7 +54,8 @@ class LoginUserOriginalSerializer(serializers.Serializer):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
 
-class LoginUserCreateSerializer(LoginUserOriginalSerializer, serializers.Serializer):
+class LoginUserCreateSerializer(LoginUserOriginalSerializer, OwnerTypeUidForLoginUserSeriazlier,
+                                serializers.Serializer):
     def update(self, instance, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 

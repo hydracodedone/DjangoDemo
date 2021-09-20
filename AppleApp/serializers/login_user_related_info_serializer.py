@@ -7,6 +7,20 @@ class OwnerTypeUidSeriazlier(serializers.Serializer):
     owner_type_uid = serializers.PrimaryKeyRelatedField(
         queryset=OwnerType.custom_objects.only("uid"),
         required=True,
+        source="uid"
+    )
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
+
+    def create(self, validated_data):
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
+
+
+class OwnerTypeUidForLoginUserSeriazlier(serializers.Serializer):
+    owner_type_uid = serializers.PrimaryKeyRelatedField(
+        queryset=OwnerType.custom_objects.only("uid"),
+        required=True,
     )
 
     def update(self, instance, validated_data):

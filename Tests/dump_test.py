@@ -8,16 +8,15 @@ def query_user_related_info():
     return query_owner_type_response.json()
 
 
-def create_new_user():
+def create_new_user(name_data, phone_number_data, login_name_data):
     data = {
-        "name": "王王王",
-        "phone_number": "15719630529",
-        "login_name": "Hydra3",
+        "name": name_data,
+        "phone_number": phone_number_data,
+        "login_name": login_name_data,
         "login_password": "123456",
         "address": "甘肃省平凉市泾川县",
         "owner_type_uid": query_user_related_info().get("data").get("owner_type")[0].get("owner_type_uid")
     }
-    print(data)
     create_user_response = requests.post("http://localhost:8000/management/user/", json=data)
     print(create_user_response.json())
 
@@ -39,9 +38,9 @@ def refresh_token(token_data):
     return generate_token_response.json().get("data").get("token")
 
 
-def first_generate_token():
+def first_generate_token(login_name_data):
     generate_data = {
-        "login_name": "Hydra3",
+        "login_name": login_name_data,
         "login_password": "123456"
     }
     generate_token_response = requests.post("http://localhost:8000/token/", json=generate_data)
@@ -108,7 +107,11 @@ def create_new_batch_apple_info():
 
 
 if __name__ == '__main__':
-    create_new_user()
-    token = first_generate_token()
+
+    name = "王译"
+    phone_number = "17302841531"
+    login_name = "hydra5"
+    create_new_user(name, phone_number, login_name)
+    token = first_generate_token(login_name)
     update_user(token)
     create_new_batch_apple_info()

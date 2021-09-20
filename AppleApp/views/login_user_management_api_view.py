@@ -21,6 +21,7 @@ class LoginUserApi(APIView):
         data = request.data
         serializer = LoginUserCreateSerializer(many=False, data=data)
         if serializer.is_valid():
+            print(serializer.validated_data)
             LoginModelAction.create_new_user(**serializer.validated_data)
         else:
             response_data = ResponseFomatter.get_validated_error(serializer.errors)
