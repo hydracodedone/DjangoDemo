@@ -1,3 +1,5 @@
+from functools import update_wrapper
+
 from rest_framework import exceptions
 from rest_framework.permissions import BasePermission
 from rest_framework.request import Request
@@ -34,3 +36,17 @@ class CustomTestPermission(BasePermission):
             raise exceptions.NotAuthenticated()
         else:
             return True
+
+
+def custom_permission_decorator(permission_classes):
+    def decorator(func):
+        def wrapper(request, *args, **kwargs):
+            for each_permission in permission_classes:
+                result = each_permission().has_permission(request, None)
+                if not result:
+                    raise exceptions.PermissionDenied()
+            return func(request, *args, **kwargs)
+
+        return update_wrapper(wrapper, func)
+
+    return decorator

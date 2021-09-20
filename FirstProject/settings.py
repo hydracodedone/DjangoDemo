@@ -14,6 +14,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     "simpleui",
+    "drf_yasg2",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -59,7 +60,7 @@ WSGI_APPLICATION = "FirstProject.wsgi.application"
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.mysql",
-        "NAME": "demo",
+        "NAME": "apple",
         "USER": "root",
         "PASSWORD": "root",
         "HOST": "127.0.0.1",
@@ -161,12 +162,12 @@ LOGGING = {
     },
     'loggers': {
         'error': {
-            'handlers': ['console', 'error'],
+            'handlers': [],
             'level': 'DEBUG',
             'propagate': True
         },
         'sql': {
-            'handlers': ['console', 'sql_record'],
+            'handlers': [],
             'level': 'DEBUG',
             'propagate': True
         },

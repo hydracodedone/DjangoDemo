@@ -6,7 +6,30 @@ from FirstProject.util.constant.validate_error import MODIFY_ILLEGAL, DATA_IS_SO
 from FirstProject.util.validate_function.validate_function import positive_float_int_validator
 
 
-class AppleInstanceAppleInfoOriginalSerializer(serializers.Serializer):
+class AppleInstanceUidSerializer(serializers.Serializer):
+    apple_instance_uid = serializers.PrimaryKeyRelatedField(
+        required=True,
+        queryset=AppleInstance.custom_objects.only("uid"),
+        allow_null=False,
+        source="uid"
+    )
+
+    def validate_uid(self, data):
+        if data.is_deleted:
+            raise ValidationError(DATA_IS_SOFTED_DELETED.format(data.uid))
+        if not data.owner.user_id == self.context.get("user_uid"):
+            raise ValidationError(MODIFY_ILLEGAL)
+        else:
+            return data
+
+    def update(self, instance, validated_data):
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
+
+    def create(self, validated_data):
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
+
+
+class AppleInstanceOriginalSerializer(serializers.Serializer):
     type = serializers.PrimaryKeyRelatedField(
         queryset=AppleType.custom_objects.only("uid"),
         required=True,
@@ -44,7 +67,7 @@ class AppleInstanceAppleInfoOriginalSerializer(serializers.Serializer):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
 
-class AppleInstanceAppleInfoCreateSerializer(AppleInstanceAppleInfoOriginalSerializer):
+class AppleInstanceCreateSerializer(AppleInstanceOriginalSerializer):
     is_available = serializers.BooleanField(required=True, allow_null=False)
     note = serializers.CharField(required=False, allow_null=False)
 
@@ -55,12 +78,7 @@ class AppleInstanceAppleInfoCreateSerializer(AppleInstanceAppleInfoOriginalSeria
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
 
-class AppleInstanceAppleInfoUpdateSerializer(AppleInstanceAppleInfoOriginalSerializer):
-    uid = serializers.PrimaryKeyRelatedField(
-        required=True,
-        queryset=AppleInstance.custom_objects.only("uid"),
-        allow_null=False,
-    )
+class AppleInstanceAppleInfoUpdateSerializer(AppleInstanceUidSerializer):
     is_available = serializers.BooleanField(required=False, allow_null=False)
     note = serializers.CharField(required=False, allow_null=False)
     type = serializers.PrimaryKeyRelatedField(
@@ -99,30 +117,11 @@ class AppleInstanceAppleInfoUpdateSerializer(AppleInstanceAppleInfoOriginalSeria
     def create(self, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
-    def validate_uid(self, data: AppleInstance):
-        if data.is_deleted:
-            raise ValidationError(DATA_IS_SOFTED_DELETED.format(data.uid))
-        if not data.owner.user_id == self.context.get("user_uid"):
-            raise ValidationError(MODIFY_ILLEGAL)
 
-
-class AppleInstanceAppleInfoDeleteSerializer(serializers.Serializer):
+class AppleInstanceAppleInfoDeleteSerializer(AppleInstanceUidSerializer):
     def update(self, instance, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
     def create(self, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
-    uid = serializers.PrimaryKeyRelatedField(
-        required=True,
-        queryset=AppleInstance.custom_objects.only("uid"),
-        allow_null=False
-    )
-
-    def validate_uid(self, data):
-        if data.is_deleted:
-            raise ValidationError(DATA_IS_SOFTED_DELETED.format(data.uid))
-        if not data.owner.user_id == self.context.get("user_uid"):
-            raise ValidationError(MODIFY_ILLEGAL)
-        else:
-            return data

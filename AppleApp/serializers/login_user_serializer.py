@@ -1,8 +1,6 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 from rest_framework.validators import UniqueValidator
 
-from AppleApp.model_action.login_user_action_set import LoginModelAction
 from AppleApp.models import LoginUser
 from AppleApp.serializers.onwer_type_serializer import OwnerTypeUidSeriazlier
 from FirstProject.util.constant.validate_error import PHONE_HAS_BEEN_REGISTERED, LOGIN_NAME_HAS_BEEN_REGISTERED
@@ -10,17 +8,20 @@ from FirstProject.util.validate_function.validate_function import name_validator
     login_username_validator, password_validator
 
 
-class LoginUserOriginalSerializer(serializers.Serializer):
+class LoginUsrUidSerializer(serializers.Serializer):
+    uid = serializers.PrimaryKeyRelatedField(
+        queryset=LoginUser.custom_objects.only("uid"),
+        allow_null=False
+    )
+
     def update(self, instance, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
     def create(self, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
-    uid = serializers.UUIDField(
-        allow_null=False,
-        required=False,
-    )
+
+class LoginUserOriginalSerializer(OwnerTypeUidSeriazlier, serializers.Serializer):
     name = serializers.CharField(
         allow_null=False,
         allow_blank=False,
@@ -59,8 +60,14 @@ class LoginUserOriginalSerializer(serializers.Serializer):
         trim_whitespace=True,
     )
 
+    def update(self, instance, validated_data):
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
-class LoginUserCreateSerializer(LoginUserOriginalSerializer):
+    def create(self, validated_data):
+        raise NotImplementedError("DO NOT NEED IMPLEMENTED")
+
+
+class LoginUserCreateSerializer(LoginUserOriginalSerializer, serializers.Serializer):
     def update(self, instance, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
@@ -77,8 +84,6 @@ class LoginUserCreateSerializer(LoginUserOriginalSerializer):
         ]
     )
 
-    owner_type = OwnerTypeUidSeriazlier(required=True, allow_null=False)
-
 
 class LoginUserUpdateSerializer(serializers.Serializer):
     def update(self, instance, validated_data):
@@ -87,10 +92,6 @@ class LoginUserUpdateSerializer(serializers.Serializer):
     def create(self, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")
 
-    uid = serializers.UUIDField(
-        allow_null=False,
-        required=True,
-    )
     name = serializers.CharField(
         allow_null=True,
         allow_blank=True,
@@ -137,11 +138,6 @@ class LoginUserUpdateSerializer(serializers.Serializer):
             password_validator,
         ]
     )
-
-    @staticmethod
-    def validate_uid(uid):
-        if not LoginModelAction.query_user_by_uid(uid):
-            raise ValidationError("uid dose not match any user")
 
 
 class LoginUserLoginSerializer(serializers.Serializer):

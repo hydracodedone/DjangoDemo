@@ -7,7 +7,7 @@ from FirstProject.util.customized_exception.global_exception import DataInvalida
 class AppleModelAction(object):
 
     @staticmethod
-    def create_new_apple_storage_info(**validated_data):
+    def create_apple_info(**validated_data):
         apple_instance = AppleInstance(**validated_data)
         try:
             apple_instance.full_clean()
@@ -17,7 +17,7 @@ class AppleModelAction(object):
             apple_instance.save()
 
     @staticmethod
-    def update_new_apple_storage_info(**validated_data):
+    def update_apple_info(**validated_data):
         apple_instance = validated_data.pop("uid")
         for key, value in validated_data.items():
             if not hasattr(apple_instance, key):
@@ -32,7 +32,11 @@ class AppleModelAction(object):
             apple_instance.save()
 
     @staticmethod
-    def delete_apple_storage_info(**validated_data):
+    def delete_apple_info(**validated_data):
         apple_instance = validated_data.pop("uid")
         apple_instance_uid = apple_instance.uid
         AppleInstance.custom_objects.filter(uid=apple_instance_uid).first().delete()
+
+    @staticmethod
+    def query_apple_info(owner_uid):
+        return AppleInstance.custom_objects.filter(owner_id=owner_uid)

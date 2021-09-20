@@ -1,9 +1,11 @@
+from django.conf import settings
+from django.contrib.auth.hashers import make_password
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
 from AppleApp.model_action.owner_action_set import OwnerModelAction
 from AppleApp.model_action.storage_pool_action_set import StoragePoolModelAction
-from AppleApp.model_action.storge_type_action_set import StorageTypeModelAction
+from AppleApp.model_action.storge_info_action_set import StorageTypeModelAction
 from AppleApp.models import LoginUser
 from FirstProject.util.constant.model_action_error import LOGIN_FAIL
 from FirstProject.util.customized_exception.global_exception import DataInvalidationException
@@ -11,20 +13,22 @@ from FirstProject.util.customized_exception.global_exception import DataInvalida
 
 class LoginModelAction(object):
     @staticmethod
-    def create_new_user(**validate_data):
-        owner_type_id = validate_data.pop("owner_type").get("uid")
-        user_instance = LoginUser(**validate_data)
+    def create_new_user(**validated_data):
+        owner_type_uid = validated_data.pop("owner_type_uid").uid
+        user_instance = LoginUser(**validated_data)
         try:
             user_instance.full_clean()
         except ValidationError as err:
             raise DataInvalidationException(err.message_dict)
         else:
             with transaction.atomic():
-                user_instance = LoginUser.custom_objects.create(**validate_data)
+                validated_data.update(**{"is_validate": False})
+                user_instance = LoginUser.custom_objects.create(**validated_data)
+
                 owner = OwnerModelAction.create_new_owner(
                     **{
                         "user_id": user_instance.uid,
-                        "owner_type_id": owner_type_id,
+                        "owner_type_uid": owner_type_uid,
                     })
                 StoragePoolModelAction.create_new_self_storage_pool(
                     **{
@@ -39,6 +43,9 @@ class LoginModelAction(object):
     @staticmethod
     def update_user(**validate_data):
         uid = validate_data.pop("uid")
+        login_password = validate_data.get("login_password", None)
+        if login_password:
+            validate_data["login_password"] = make_password(login_password, settings.PASSWORD_SALT, "pbkdf2_sha256")
         user_instance = LoginUser.custom_objects.filter(uid=uid).first()
         user_instance.__dict__.update(**validate_data)
         user_instance.__dict__.update({"is_validate": False})

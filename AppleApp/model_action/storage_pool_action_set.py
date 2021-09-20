@@ -26,3 +26,7 @@ class StoragePoolModelAction(object):
             raise DRFValidationError(err.message_dict)
         else:
             storage_pool_instance.save()
+
+    @staticmethod
+    def query_self_storage_pool_info(owner_id):
+        return StoragePool.custom_objects.filter(owner_id=owner_id)

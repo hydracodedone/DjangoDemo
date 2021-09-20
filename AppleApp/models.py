@@ -309,7 +309,13 @@ class AppleInstanceThroughStorage(CommonAbstractModel):
 
 
 class StoragePoolQuantityChangeLogType(CommonAbstractModel):
+    add_or_sub_choice = (
+        (1, "add"),
+        (-1, "sub")
+    )
     change_type = models.CharField(null=False, blank=False, unique=True, max_length=10, verbose_name="账目类型")
+    add_or_sub = models.IntegerField(null=False, blank=False, choices=add_or_sub_choice, default=1)
+    custom_objects = CommonManager()
 
     def __str__(self):
         return self.change_type

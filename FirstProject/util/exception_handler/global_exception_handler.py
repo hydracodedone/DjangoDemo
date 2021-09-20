@@ -6,10 +6,8 @@ from rest_framework.status import HTTP_500_INTERNAL_SERVER_ERROR
 from rest_framework.views import exception_handler
 
 from FirstProject.util.customized_response.global_response import ResponseFomatter
-from FirstProject.util.logging.golobal_logging import MyAbstractLogger
 
 LOGGER = logging.getLogger("error")
-
 
 
 def custom_exception_handler(exc, context):

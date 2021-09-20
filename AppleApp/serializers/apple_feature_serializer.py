@@ -2,7 +2,7 @@ from rest_framework import serializers
 
 
 class AppleTypeSerializer(serializers.Serializer):
-    uid = serializers.UUIDField(required=True)
+    apple_type_uid = serializers.PrimaryKeyRelatedField(read_only=True, source="uid")
     name = serializers.CharField(source="type_name")
 
     def update(self, instance, validated_data):
@@ -13,7 +13,7 @@ class AppleTypeSerializer(serializers.Serializer):
 
 
 class AppleLevelSerializer(serializers.Serializer):
-    uid = serializers.UUIDField(required=True)
+    apple_level_uid = serializers.PrimaryKeyRelatedField(read_only=True, source="uid")
     name = serializers.CharField(source="level_name")
 
     def update(self, instance, validated_data):
@@ -24,7 +24,7 @@ class AppleLevelSerializer(serializers.Serializer):
 
 
 class AppleMaturitySerializer(serializers.Serializer):
-    uid = serializers.UUIDField(required=True)
+    apple_maturity_uid = serializers.PrimaryKeyRelatedField(read_only=True, source="uid")
     name = serializers.CharField(source="maturity_name")
 
     def update(self, instance, validated_data):
@@ -35,7 +35,7 @@ class AppleMaturitySerializer(serializers.Serializer):
 
 
 class ApplePesticideResidueSerializer(serializers.Serializer):
-    uid = serializers.UUIDField(required=True)
+    apple_pesticde_residue_uid = serializers.PrimaryKeyRelatedField(read_only=True, source="uid")
     name = serializers.CharField(source="pesticide_residue_name")
 
     def update(self, instance, validated_data):
@@ -46,7 +46,7 @@ class ApplePesticideResidueSerializer(serializers.Serializer):
 
 
 class ApplePackingTypeSerializer(serializers.Serializer):
-    uid = serializers.UUIDField(required=True)
+    apple_packing_type_uid = serializers.PrimaryKeyRelatedField(read_only=True, source="uid")
     name = serializers.CharField(source="packing_type_name")
 
     def update(self, instance, validated_data):
