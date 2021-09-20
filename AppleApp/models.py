@@ -17,6 +17,7 @@ class CommonAbstractModel(models.Model):
     update_time = models.DateTimeField(auto_now=True, verbose_name="最后一次更新时间")
     delete_time = models.DateTimeField(null=True, blank=True, verbose_name="删除时间")
     is_deleted = models.BooleanField(null=False, default=False, verbose_name="是否删除")
+    custom_objects = CommonManager()
 
     class Meta:
         abstract = True
@@ -43,14 +44,15 @@ class LoginUserQuerySet(QuerySet):
         return super().update(**kwargs)
 
     def create(self, **kwargs):
-        if "login_password" in kwargs.keys():
-            kwargs["login_password"] = make_password(kwargs["login_password"], settings.PASSWORD_SALT, "pbkdf2_sha256")
+        kwargs["login_password"] = make_password(kwargs["login_password"], settings.PASSWORD_SALT, "pbkdf2_sha256")
+        kwargs.update(**{"is_validate": False})
         return super(LoginUserQuerySet, self).create(**kwargs)
 
-    def filter(self, **kwargs):
+    def filter(self, *args, **kwargs):
         if "login_password" in kwargs.keys():
             kwargs["login_password"] = make_password(kwargs["login_password"], settings.PASSWORD_SALT, "pbkdf2_sha256")
-        return super(LoginUserQuerySet, self).filter(**kwargs)
+        kwargs.update(**{"is_deleted": False})
+        return super(LoginUserQuerySet, self).filter(*args, **kwargs)
 
 
 class LoginUserManager(models.Manager):

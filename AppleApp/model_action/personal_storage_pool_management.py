@@ -7,22 +7,13 @@ from AppleApp.models import StoragePool
 class StoragePoolModelAction(object):
     @staticmethod
     def create_new_self_storage_pool(**validated_data):
-        pool_type = validated_data.get("pool_type")
-        owner_id = validated_data.get("owner_id")
-        owner_name = validated_data.get("owner_name")
-        phone_number = validated_data.get("phone_number")
-        location = validated_data.get("location")
+        validated_data.update(**{"is_internal_managed": False})
         storage_pool_instance = StoragePool(
-            pool_type=pool_type,
-            owner_id=owner_id,
-            owner_name=owner_name,
-            phone_number=phone_number,
-            location=location,
-            is_internal_managed=False
+            **validated_data
         )
         try:
             storage_pool_instance.full_clean()
         except ValidationError as err:
             raise DRFValidationError(err.message_dict)
         else:
-            storage_pool_instance.save()
+            StoragePool.custom_objects.create(**validated_data)

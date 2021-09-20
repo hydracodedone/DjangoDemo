@@ -15,7 +15,7 @@ class AppleModelAction(object):
         except ValidationError as err:
             raise DataInvalidationException(err.message_dict)
         else:
-            apple_instance.save()
+            AppleInstance.custom_objects.create(**validated_data)
 
     @staticmethod
     def update_apple_info(**validated_data):
@@ -32,12 +32,14 @@ class AppleModelAction(object):
         else:
             apple_instance.save()
 
+    # todo
     @staticmethod
     def delete_apple_info(**validated_data):
         apple_instance = validated_data.pop("uid")
         apple_instance_uid = apple_instance.uid
         AppleInstance.custom_objects.filter(uid=apple_instance_uid).first().delete()
 
+    # todo
     @staticmethod
     def query_apple_info(owner_uid):
         return AppleInstance.custom_objects.filter(owner_id=owner_uid)

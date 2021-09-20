@@ -15,5 +15,5 @@ class OwnerModelAction(object):
         except ValidationError as err:
             raise DRFValidationError(err.message_dict)
         else:
-            owner_instance.save()
+            owner_instance = Owner.custom_objects.create(user_id=user_id, owner_type_id=owner_type_id)
             return owner_instance
