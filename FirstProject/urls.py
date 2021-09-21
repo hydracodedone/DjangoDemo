@@ -9,6 +9,8 @@ from AppleApp.views.apple_related_info_api_view import AppleFeatureApi
 from AppleApp.views.login_user_management_api_view import LoginUserApi
 from AppleApp.views.login_user_related_info_api_view import UserRelatedInfoAPIView
 from AppleApp.views.personal_apple_management_api_view import AppleInfoManagerAPIView
+from AppleApp.views.personal_storage_pool_management_api_view import StoragePollManagerAPIView
+from AppleApp.views.storage_pool_related_info_api_view import StoragePoolRelatedAPIView
 from AppleApp.views.token_management_api_view import TokenManagementAPIView
 
 schema_view = get_schema_view(
@@ -31,13 +33,15 @@ related_info_url = [
     path("common/administrative_division/", AdministrativeDivisionAPIView.as_view()),
     path("common/user_info_related/", UserRelatedInfoAPIView.as_view()),
     path("common/apple_info_related/", AppleFeatureApi.as_view()),
+    path("common/storage_info_related/", StoragePoolRelatedAPIView.as_view()),
 ]
 token_management_url = [
     path("token/", TokenManagementAPIView.as_view()),
 ]
 management_url = [
     path("management/user/", LoginUserApi.as_view()),
-    path("management/apple/", AppleInfoManagerAPIView.as_view())
+    path("management/apple/", AppleInfoManagerAPIView.as_view()),
+    path("management/storage/", StoragePollManagerAPIView.as_view())
 ]
 storage_url = [
 

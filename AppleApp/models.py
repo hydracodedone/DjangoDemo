@@ -8,6 +8,7 @@ from django.db.models import QuerySet
 
 from AppleApp.model_manager.common_manager import CommonManager
 from FirstProject.util.constant.constant import STORAGE_PRIVITE, STORAGE_COMMERCIAL, LOG_TYPE_INPUT, LOG_TYPE_OUTPUT
+from FirstProject.util.customized_exception.global_exception import DataBaseInvalidConstrainException
 from FirstProject.util.validate_function.validate_function import uuid_general
 
 
@@ -26,7 +27,6 @@ class CommonAbstractModel(models.Model):
         super().clean_fields()
 
     def clean(self):
-        print("------------model constrain check---------------")
         super().clean()
 
     def save(self, *args, **kwargs):
@@ -64,9 +64,6 @@ class LoginUserManager(models.Manager):
 class LoginUserAbstractModel(CommonAbstractModel):
     custom_objects = LoginUserManager()
 
-    class Meta:
-        abstract = True
-
     def clean_fields(self, exclude=None):
         super().clean_fields()
 
@@ -75,6 +72,9 @@ class LoginUserAbstractModel(CommonAbstractModel):
 
     def save(self, *args, **kwargs):
         super().save(*args, **kwargs)
+
+    class Meta:
+        abstract = True
 
 
 class Permission(CommonAbstractModel):
@@ -139,7 +139,6 @@ class OwnerAbstractModel(CommonAbstractModel):
         abstract = True
 
     def clean_fields(self, exclude=None):
-        self.is_validate = False
         super().clean_fields()
 
     def clean(self):
@@ -167,6 +166,7 @@ class StoragePool(CommonAbstractModel):
         (STORAGE_PRIVITE, "自用"),
         (STORAGE_COMMERCIAL, "商用"),
     )
+    pool_name = models.CharField(null=False, blank=False, max_length=200, verbose_name="仓库名称")
     pool_type = models.IntegerField(choices=pool_type_choice, null=False, blank=False, verbose_name="仓库类型")
     longtitude = models.FloatField(null=True, blank=True, verbose_name="经度")
     latitude = models.FloatField(null=True, blank=True, verbose_name="纬度")
@@ -175,8 +175,9 @@ class StoragePool(CommonAbstractModel):
     owner_name = models.CharField(null=False, blank=False, max_length=11, verbose_name="仓库法人姓名")
     phone_number = models.CharField(null=False, blank=False, max_length=11, verbose_name="仓库联系电话")
     capacity = models.FloatField(null=True, blank=True, verbose_name="仓库总容量")
-    capacity_remaining = models.FloatField(null=True, blank=True, verbose_name="仓库剩余容量")
+    capacity_remaining = models.FloatField(null=False, blank=False, default=0, verbose_name="仓库已存容量")
     is_internal_managed = models.BooleanField(null=False, blank=False, default=False, verbose_name="是否为内部维护信息")
+    note = models.CharField(null=True, blank=True, max_length=300, verbose_name="备注")
     custom_objects = CommonManager()
 
     def __str__(self):
@@ -184,8 +185,43 @@ class StoragePool(CommonAbstractModel):
 
     class Meta:
         db_table = "Storage_Pool"
-        unique_together = ["owner", "location", "phone_number"]
+        unique_together = ["owner", "location", "phone_number", "pool_name"]
         verbose_name_plural = "仓库"
+
+
+class StoragePoolProxyModel(StoragePool):
+    class Meta:
+        proxy = True
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields()
+
+    def clean(self):
+        super().clean()
+        if self.pool_type == STORAGE_PRIVITE:
+            if not self.owner:
+                raise DataBaseInvalidConstrainException("database constrain fail")
+            if self.is_internal_managed:
+                raise DataBaseInvalidConstrainException("database constrain fail")
+        else:
+            pass
+        if self.capacity:
+            if self.capacity <= 0:
+                raise DataBaseInvalidConstrainException("database constrain fail")
+            if not self.capacity_remaining:
+                raise DataBaseInvalidConstrainException("database constrain fail")
+            if self.capacity_remaining < 0:
+                raise DataBaseInvalidConstrainException("database constrain fail")
+            if self.capacity_remaining > self.capacity:
+                raise DataBaseInvalidConstrainException("database constrain fail")
+        else:
+            if not self.capacity_remaining:
+                raise DataBaseInvalidConstrainException("database constrain fail")
+            if self.capacity_remaining < 0:
+                raise DataBaseInvalidConstrainException("database constrain fail")
+
+    def save(self, *args, **kwargs):
+        super().save(*args, **kwargs)
 
 
 class AppleType(CommonAbstractModel):

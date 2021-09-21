@@ -29,7 +29,7 @@ class LoginModelAction(object):
                         "user_id": user_instance.uid,
                         "owner_type_uid": owner_type_uid,
                     })
-                StoragePoolModelAction.create_new_self_storage_pool(
+                StoragePoolModelAction.create_default_self_storage_pool(
                     **{
                         "pool_type": STORAGE_PRIVITE,
                         "owner_id": owner.uid,
@@ -40,13 +40,13 @@ class LoginModelAction(object):
                 )
 
     @staticmethod
-    def update_user(**validate_data):
-        uid = validate_data.pop("uid")
-        login_password = validate_data.get("login_password", None)
+    def update_user(**validated_data):
+        uid = validated_data.pop("uid")
+        login_password = validated_data.get("login_password", None)
         if login_password:
-            validate_data["login_password"] = make_password(login_password, settings.PASSWORD_SALT, "pbkdf2_sha256")
+            validated_data["login_password"] = make_password(login_password, settings.PASSWORD_SALT, "pbkdf2_sha256")
         user_instance = LoginUser.custom_objects.filter(uid=uid).first()
-        user_instance.__dict__.update(**validate_data)
+        user_instance.__dict__.update(**validated_data)
         user_instance.__dict__.update({"is_validate": False})
         try:
             user_instance.full_clean()
@@ -71,9 +71,9 @@ class LoginModelAction(object):
             return user_instance
 
     @staticmethod
-    def query_user_by_uid_and_user_name(**validate_data):
-        uid = validate_data.get("uid")
-        login_name = validate_data.get("login_name")
+    def query_user_by_uid_and_user_name(**validated_data):
+        uid = validated_data.get("uid")
+        login_name = validated_data.get("login_name")
         return LoginUser.custom_objects.filter(
             login_name=login_name,
             uid=uid

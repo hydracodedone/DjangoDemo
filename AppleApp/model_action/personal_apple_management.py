@@ -1,6 +1,8 @@
 from django.core.exceptions import ValidationError
 
+from AppleApp.model_action.common_action import CommenAction
 from AppleApp.models import AppleInstance
+from FirstProject.util.constant.validate_error import MODIFY_ILLEGAL, DATA_ILLEGAL
 from FirstProject.util.customized_exception.global_exception import DataInvalidationException
 
 
@@ -18,13 +20,13 @@ class AppleModelAction(object):
             AppleInstance.custom_objects.create(**validated_data)
 
     @staticmethod
-    def update_apple_info(**validated_data):
+    def update_apple_info(user, **validated_data):
         apple_instance = validated_data.pop("uid")
-        for key, value in validated_data.items():
-            if not hasattr(apple_instance, key):
-                raise DataInvalidationException("illegal operation")
-            else:
-                setattr(apple_instance, key, value)
+        if not CommenAction.verify_owner_subordination_relation(user.owner.uid, apple_instance):
+            raise DataInvalidationException(MODIFY_ILLEGAL)
+        if CommenAction.verify_deleted_relation(apple_instance):
+            raise DataInvalidationException(DATA_ILLEGAL)
+        apple_instance.__dict__.update(**validated_data)
         try:
             apple_instance.full_clean()
         except ValidationError as err:

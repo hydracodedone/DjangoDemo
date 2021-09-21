@@ -1,8 +1,6 @@
 from rest_framework import serializers
-from rest_framework.exceptions import ValidationError
 
 from AppleApp.models import AppleType, AppleLevel, AppleMaturity, ApplePesticideResidue, ApplePackingType, AppleInstance
-from FirstProject.util.constant.validate_error import MODIFY_ILLEGAL, DATA_IS_SOFTED_DELETED
 from FirstProject.util.validate_function.validate_function import positive_float_int_validator
 
 
@@ -13,14 +11,6 @@ class AppleInstanceUidSerializer(serializers.Serializer):
         allow_null=False,
         source="uid"
     )
-
-    def validate_uid(self, data):
-        if data.is_deleted:
-            raise ValidationError(DATA_IS_SOFTED_DELETED.format(data.uid))
-        if not data.owner.user_id == self.context.get("user_uid"):
-            raise ValidationError(MODIFY_ILLEGAL)
-        else:
-            return data
 
     def update(self, instance, validated_data):
         raise NotImplementedError("DO NOT NEED IMPLEMENTED")

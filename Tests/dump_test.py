@@ -49,9 +49,9 @@ def first_generate_token(login_name_data):
     return token_data
 
 
-def generate_token():
+def generate_token(login_name_data):
     generate_data = {
-        "login_name": "Hydra",
+        "login_name": login_name_data,
         "login_password": "1234567"
     }
     generate_token_response = requests.post("http://localhost:8000/token/", json=generate_data)
@@ -68,9 +68,9 @@ def get_administrative_division_info():
     print(apple_related_info_response.json())
 
 
-def get_apple_related_info():
+def get_apple_related_info(login_name_data):
     data = {
-        "token": generate_token()
+        "token": generate_token(login_name_data)
     }
     apple_related_info_response = requests.get("http://localhost:8000/common/apple_info_related/", params=data)
     print(apple_related_info_response.json())
@@ -85,11 +85,11 @@ def get_storage_info_related_info():
     print(apple_related_info_response.json())
 
 
-def create_new_batch_apple_info():
-    related_info = get_apple_related_info()
+def create_new_batch_apple_info(login_name_data):
+    related_info = get_apple_related_info(login_name_data)
 
     data = {
-        "token": generate_token(),
+        "token": generate_token(login_name_data),
         "type": related_info.get("data").get("apple_type")[0].get("apple_type_uid"),
         "level": related_info.get("data").get("apple_level")[0].get("apple_level_uid"),
         "maturity": related_info.get("data").get("apple_maturity")[0].get("apple_maturity_uid"),
@@ -106,11 +106,45 @@ def create_new_batch_apple_info():
     print(apple_create_response.json())
 
 
+def query_storage_related_info(login_name_data):
+    data = {
+        "token": generate_token(login_name_data)
+    }
+    storage_related_info_response = requests.get("http://localhost:8000/common/storage_info_related/", params=data)
+    print(storage_related_info_response.json())
+    return storage_related_info_response.json()
+
+
+def create_new_storage(login_name_data):
+    related_info = query_storage_related_info(login_name)
+    data = {
+        "token": generate_token(login_name_data),
+        "pool_type": related_info.get("data").get("storage_pool_type")[0].get("storage_pool_value"),
+        "location": "甘肃省平凉市泾川县",
+        "pool_name": "default",
+    }
+    apple_create_response = requests.post("http://localhost:8000/management/storage/", json=data)
+    print(apple_create_response.json())
+
+
+def update_storage(login_name_data):
+    data = {
+        "storage_pool_uid": "b3175d97d6224ab0afe8d5f2075f14dd",
+        "token": generate_token(login_name_data),
+        "location": "甘肃省平凉市泾川县",
+        "pool_name": "not default",
+        "capacity": 19000
+    }
+    apple_create_response = requests.put("http://localhost:8000/management/storage/", json=data)
+    print(apple_create_response.json())
+
+
 if __name__ == '__main__':
-    name = "王译"
-    phone_number = "17302841531"
-    login_name = "hydra5"
-    create_new_user(name, phone_number, login_name)
-    token = first_generate_token(login_name)
-    update_user(token)
-    create_new_batch_apple_info()
+    name = "译王"
+    phone_number = "17312831525"
+    login_name = "hydra1"
+    # create_new_user(name, phone_number, login_name)
+    # token = first_generate_token(login_name)
+    # update_user(token)
+    # create_new_batch_apple_info(login_name)
+    update_storage(login_name)
